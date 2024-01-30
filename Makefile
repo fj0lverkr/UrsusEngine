@@ -5,10 +5,10 @@ OBJS = main.cpp game.cpp
 CC = g++
 
 #INCLUDE_PATHS specifies the additional include paths we'll need
-INCLUDE_PATHS = -IC:\mingw_dev_lib\i686_sdl2\include\SDL2
+INCLUDE_PATHS = -I src/include
 
 #LIBRARY_PATHS specifies the additional library paths we'll need
-LIBRARY_PATHS = -LC:\mingw_dev_lib\i686_sdl2\lib
+LIBRARY_PATHS = -L src/lib
 
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
@@ -23,4 +23,4 @@ OBJ_NAME = main
 
 #This is the target that compiles our executable
 all : $(OBJS)
-		$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
+	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)

@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:\\mingw_dev_lib/**"
+                "${workspaceFolder}/src/include"
             ],
             "defines": [
                 "_DEBUG",

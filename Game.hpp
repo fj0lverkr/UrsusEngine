@@ -2,8 +2,8 @@
 #define Game_hpp
 #define SDL_MAIN_HANDLED
 
-#include <SDL2/SDL.h>
 #include <iostream>
+#include <SDL2/SDL.h>
 
 class Game
 {
