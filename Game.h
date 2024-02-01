@@ -1,4 +1,4 @@
-// #define SDL_MAIN_HANDLED
+#pragma once
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -9,7 +9,6 @@ class Game
 private:
     bool isRunning;
     SDL_Window *window;
-    SDL_Renderer *renderer;
     int cnt = 0;
 
 public:
@@ -23,4 +22,5 @@ public:
     void clean();
 
     bool running();
+    static SDL_Renderer *renderer;
 };

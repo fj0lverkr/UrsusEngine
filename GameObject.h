@@ -1,4 +1,7 @@
-#include <SDL2/SDL.h>
+#pragma once
+
+#include "Game.h"
+#include "TextureManager.h"
 
 class GameObject
 {
@@ -7,10 +10,9 @@ private:
     int ypos;
     SDL_Texture *objTexture;
     SDL_Rect srcRect, destRect;
-    SDL_Renderer *renderer;
 
 public:
-    GameObject(const char *textureSheet, SDL_Renderer *r, int x, int y, int srcX, int srcY, int srcW, int srcH);
+    GameObject(const char *textureSheet, int x, int y, int srcX, int srcY, int srcW, int srcH);
     ~GameObject();
 
     void Update();
