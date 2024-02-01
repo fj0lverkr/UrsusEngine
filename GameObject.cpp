@@ -19,8 +19,6 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
-    xpos++;
-    ypos++;
     destRect.x = xpos;
     destRect.y = ypos;
     destRect.h = srcRect.h * 2;
