@@ -12,7 +12,7 @@ Game::~Game()
 {
 }
 
-void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen)
+void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen, SDL_Color rendererColor)
 {
     int flags = 0;
     if (fullscreen)
@@ -30,7 +30,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
             renderer = SDL_CreateRenderer(window, -1, 0);
             if (renderer)
             {
-                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                SDL_SetRenderDrawColor(renderer, rendererColor.r, rendererColor.g, rendererColor.b, rendererColor.a);
                 std::cout << "Renderer created" << std::endl;
                 isRunning = true;
             }

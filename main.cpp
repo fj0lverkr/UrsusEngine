@@ -4,14 +4,21 @@ Game *game = nullptr;
 
 int main(int argc, char *argv[])
 {
+    // Framerate settings
     const int TARGETFPS = 60;
     const int FRAMEDELAY = 1000 / TARGETFPS;
+
+    // Initial window Settings
+    const char *WINDOWTITLE = "Ursus Engine";
+    const int WINDOWW = 800;
+    const int WINDOWH = 600;
+    const SDL_Color WINDOWBG = {255, 165, 0, 255};
 
     Uint64 frameStart;
     int frameTime;
 
     game = new Game();
-    game->init("Ursus Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false);
+    game->init(WINDOWTITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOWW, WINDOWH, false, WINDOWBG);
     while (game->running())
     {
         frameStart = SDL_GetTicks64();
