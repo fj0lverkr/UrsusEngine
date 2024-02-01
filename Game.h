@@ -1,6 +1,4 @@
-#ifndef Game_hpp
-#define Game_hpp
-#define SDL_MAIN_HANDLED
+// #define SDL_MAIN_HANDLED
 
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -26,5 +24,3 @@ public:
 
     bool running();
 };
-
-#endif /* Game_hpp */
