@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     const char *WINDOWTITLE = "Ursus Engine";
     const int WINDOWW = 800;
     const int WINDOWH = 600;
-    const SDL_Color WINDOWBG = {255, 165, 0, 255};
+    const SDL_Color WINDOWBG = {255, 255, 255, 255};
 
     Uint64 frameStart;
     int frameTime;

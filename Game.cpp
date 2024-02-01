@@ -1,8 +1,7 @@
 #include "Game.h"
-#include "TextureManager.h"
+#include "GameObject.h"
 
-SDL_Texture *playerTexture;
-SDL_Rect srcR, destR;
+GameObject *player;
 
 Game::Game()
 {
@@ -22,16 +21,13 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
     {
-        std::cout << "Subsystems initialized!" << std::endl;
         window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
         if (window)
         {
-            std::cout << "Window created!" << std::endl;
             renderer = SDL_CreateRenderer(window, -1, 0);
             if (renderer)
             {
                 SDL_SetRenderDrawColor(renderer, rendererColor.r, rendererColor.g, rendererColor.b, rendererColor.a);
-                std::cout << "Renderer created" << std::endl;
                 isRunning = true;
             }
         }
@@ -41,7 +37,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
 
-    playerTexture = TextureManager::LoadTexture("assets/player_sprite.png", renderer);
+    player = new GameObject("assets/player_sprite.png", renderer, 0, 0, 0, 0, 32, 32);
 }
 
 void Game::handleEvents()
@@ -61,18 +57,14 @@ void Game::handleEvents()
 
 void Game::update()
 {
-    cnt++;
-    destR.h = 64;
-    destR.w = 64;
-    destR.x = cnt;
-    std::cout << cnt << std::endl;
+    player->Update();
 }
 
 void Game::render()
 {
     SDL_RenderClear(renderer);
     // Add content to render, content is rendered from back to front
-    SDL_RenderCopy(renderer, playerTexture, NULL, &destR);
+    player->Render();
     SDL_RenderPresent(renderer);
 }
 
@@ -81,7 +73,6 @@ void Game::clean()
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
-    std::cout << "Game cleaned, SDL Quit." << std::endl;
 }
 
 bool Game::running()
