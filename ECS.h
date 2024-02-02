@@ -87,4 +87,15 @@ public:
         c->init();
         return *c;
     }
+
+    template <typename T>
+    T &GetComponent() const
+    {
+        auto ptr(componentArray[getComponentTypeId<T>()]);
+        return *static_cast<T *>(ptr);
+    }
+};
+
+class Manager
+{
 };
