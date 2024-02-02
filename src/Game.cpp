@@ -1,16 +1,13 @@
 #include "Game.h"
-#include "GameObject.h"
 #include "TiledMap.h"
 
-#include "ECS.h"
-#include "Components.h"
+#include "ECS/Components.h"
 
-GameObject *player;
 TiledMap *map;
 SDL_Renderer *Game::renderer = nullptr;
 
 Manager manager;
-auto &newPlayer(manager.addEntity());
+auto &player(manager.addEntity());
 
 Game::Game()
 {
@@ -46,11 +43,10 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
 
-    player = new GameObject("assets/player_sprite.png", 0, 0, 0, 0, 32, 32);
     map = new TiledMap();
 
-    newPlayer.addComponent<PositionComponent>();
-    newPlayer.GetComponent<PositionComponent>().setPos(500, 500);
+    player.addComponent<PositionComponent>(10, 10);
+    player.addComponent<SpriteComponent>("assets/player_sprite.png");
 }
 
 void Game::handleEvents()
@@ -70,9 +66,8 @@ void Game::handleEvents()
 
 void Game::update()
 {
-    player->Update();
+    manager.refresh();
     manager.update();
-    std::cout << newPlayer.GetComponent<PositionComponent>().x() << "," << newPlayer.GetComponent<PositionComponent>().y() << std::endl;
 }
 
 void Game::render()
@@ -80,7 +75,7 @@ void Game::render()
     SDL_RenderClear(renderer);
     // Add content to render, content is rendered from back to front
     map->DrawMap();
-    player->Render();
+    manager.draw();
     SDL_RenderPresent(renderer);
 }
 
