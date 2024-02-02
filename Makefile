@@ -1,14 +1,14 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = main.cpp Game.cpp TextureManager.cpp GameObject.cpp TiledMap.cpp
+OBJS = main.cpp src/Game.cpp src/TextureManager.cpp src/GameObject.cpp src/TiledMap.cpp
 
 #CC specifies which compiler we're using
 CC = g++
 
 #INCLUDE_PATHS specifies the additional include paths we'll need
-INCLUDE_PATHS = -I src/include
+INCLUDE_PATHS = -I C:/src/SDL2/include -I src
 
 #LIBRARY_PATHS specifies the additional library paths we'll need
-LIBRARY_PATHS = -L src/lib
+LIBRARY_PATHS = -L C:/src/SDL2/lib
 
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
