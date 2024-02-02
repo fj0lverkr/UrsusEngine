@@ -45,7 +45,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     map = new TiledMap();
 
-    player.addComponent<PositionComponent>(10, 10);
+    player.addComponent<TransformComponent>(10, 10);
     player.addComponent<SpriteComponent>("assets/player_sprite.png");
 }
 
