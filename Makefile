@@ -8,7 +8,7 @@ CC = g++
 INCLUDE_PATHS = -I src/include
 
 #LIBRARY_PATHS specifies the additional library paths we'll need
-LIBRARY_PATHS = -L src/lib -L /usr/x86_64-w64-mingw32/lib
+LIBRARY_PATHS = -L src/lib
 
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
