@@ -12,12 +12,15 @@ class Entity;
 
 using ComponentId = std::size_t;
 
-inline ComponentId getComponentTypeId() {
+inline ComponentId getComponentTypeId()
+{
   static ComponentId lastId = 0;
   return lastId++;
 };
 
-template <typename T> inline ComponentId getComponentTypeId() noexcept {
+template <typename T>
+inline ComponentId getComponentTypeId() noexcept
+{
   static ComponentId typeId = getComponentTypeId();
   return typeId;
 }
@@ -27,7 +30,8 @@ constexpr std::size_t maxComponents = 32;
 using ComponentBitset = std::bitset<maxComponents>;
 using ComponentArray = std::array<Component *, maxComponents>;
 
-class Component {
+class Component
+{
 public:
   Entity *entity;
 
@@ -38,7 +42,8 @@ public:
   virtual ~Component(){};
 };
 
-class Entity {
+class Entity
+{
 private:
   bool active = true;
   std::vector<std::unique_ptr<Component>> components;
@@ -46,24 +51,31 @@ private:
   ComponentBitset componentBitset;
 
 public:
-  void update() {
+  void update()
+  {
     for (auto &c : components)
       c->update();
+  }
+
+  void draw()
+  {
     for (auto &c : components)
       c->draw();
   }
-
-  void draw() {}
 
   bool isActive() const { return active; }
 
   void destroy() { active = false; }
 
-  template <typename T> bool hasComponent() const {
+  template <typename T>
+  bool hasComponent() const
+  {
     return componentBitset[getComponentTypeId<T>];
   }
 
-  template <typename T, typename... TArgs> T &addComponent(TArgs &&...mArgs) {
+  template <typename T, typename... TArgs>
+  T &addComponent(TArgs &&...mArgs)
+  {
     T *c(new T(std::forward<TArgs>(mArgs)...));
     c->entity = this;
     std::unique_ptr<Component> uPtr{c};
@@ -76,10 +88,44 @@ public:
     return *c;
   }
 
-  template <typename T> T &GetComponent() const {
+  template <typename T>
+  T &GetComponent() const
+  {
     auto ptr(componentArray[getComponentTypeId<T>()]);
     return *static_cast<T *>(ptr);
   }
 };
 
-class Manager {};
+class Manager
+{
+private:
+  std::vector<std::unique_ptr<Entity>> entities;
+
+public:
+  void update()
+  {
+    for (auto &e : entities)
+      e->update();
+  }
+
+  void draw()
+  {
+    for (auto &e : entities)
+      e->draw();
+  }
+
+  void refresh()
+  {
+    entities.erase(std::remove_if(std::begin(entities), std::end(entities), [](const std::unique_ptr<Entity> &mEntity)
+                                  { return !mEntity->isActive(); }),
+                   std::end(entities));
+  }
+
+  Entity &addEntity()
+  {
+    Entity *e = new Entity();
+    std::unique_ptr<Entity> uPtr(e);
+    entities.emplace_back(std::move(uPtr));
+    return *e;
+  }
+};

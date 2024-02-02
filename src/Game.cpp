@@ -2,9 +2,15 @@
 #include "GameObject.h"
 #include "TiledMap.h"
 
+#include "ECS.h"
+#include "Components.h"
+
 GameObject *player;
 TiledMap *map;
 SDL_Renderer *Game::renderer = nullptr;
+
+Manager manager;
+auto &newPlayer(manager.addEntity());
 
 Game::Game()
 {
@@ -42,6 +48,9 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     player = new GameObject("assets/player_sprite.png", 0, 0, 0, 0, 32, 32);
     map = new TiledMap();
+
+    newPlayer.addComponent<PositionComponent>();
+    newPlayer.GetComponent<PositionComponent>().setPos(500, 500);
 }
 
 void Game::handleEvents()
@@ -62,6 +71,8 @@ void Game::handleEvents()
 void Game::update()
 {
     player->Update();
+    manager.update();
+    std::cout << newPlayer.GetComponent<PositionComponent>().x() << "," << newPlayer.GetComponent<PositionComponent>().y() << std::endl;
 }
 
 void Game::render()
