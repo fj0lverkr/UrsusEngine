@@ -1,12 +1,20 @@
 #pragma once
 #include <string>
-#include "SDL2/SDL.h"
+#include <SDL2/SDL.h>
+#include <boost/uuid/random_generator.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include "Components.h"
 
-struct ColliderComponent : public Component
+class ColliderComponent : public Component
 {
+private:
+    boost::uuids::random_generator gen;
+
+public:
     SDL_Rect collider;
     std::string tag;
+    std::string uuid;
 
     TransformComponent *transform;
 
@@ -22,6 +30,11 @@ struct ColliderComponent : public Component
             entity->addComponent<TransformComponent>();
         }
         transform = &entity->GetComponent<TransformComponent>();
+
+        boost::uuids::uuid id = gen();
+        this->uuid = boost::uuids::to_string(id);
+
+        Game::colliders.push_back(this);
     }
 
     void update() override

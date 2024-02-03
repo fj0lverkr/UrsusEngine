@@ -8,9 +8,15 @@ TiledMap *map;
 SDL_Renderer *Game::renderer = nullptr;
 SDL_Event Game::event;
 
+std::vector<ColliderComponent *> Game::colliders;
+
 Manager manager;
 auto &player(manager.addEntity());
 auto &wall(manager.addEntity());
+
+auto &tile0(manager.addEntity());
+auto &tile1(manager.addEntity());
+auto &tile2(manager.addEntity());
 
 Game::Game()
 {
@@ -52,9 +58,16 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player.addComponent<SpriteComponent>("assets/player_sprite.png");
     player.addComponent<ColliderComponent>("player");
     player.addComponent<KeyboardController>();
+
     wall.addComponent<TransformComponent>(300, 300, 20, 300, 1);
     wall.addComponent<SpriteComponent>("assets/map/dirt.png");
     wall.addComponent<ColliderComponent>("wall");
+
+    tile0.addComponent<TileComponent>(200, 200, 32, 32, 0);
+    tile1.addComponent<TileComponent>(250, 250, 32, 32, 1);
+    tile1.addComponent<ColliderComponent>("dirt");
+    tile2.addComponent<TileComponent>(150, 150, 32, 32, 2);
+    tile2.addComponent<ColliderComponent>("grass");
 }
 
 void Game::handleEvents()
@@ -76,10 +89,18 @@ void Game::update()
     manager.refresh();
     manager.update();
 
-    if (Collision::AABB(player.GetComponent<ColliderComponent>().collider, wall.GetComponent<ColliderComponent>().collider))
+    for (auto c : colliders)
     {
-        player.GetComponent<TransformComponent>().velocity * -1;
-        std::cout << "player collides with wall" << std::endl;
+        for (auto cc : colliders)
+        {
+            if (Collision::AABB(*c, *cc))
+            {
+                if (c->tag == "player" || cc->tag == "player")
+                {
+                    player.GetComponent<TransformComponent>().velocity * -1;
+                }
+            }
+        }
     }
 }
 
@@ -87,7 +108,7 @@ void Game::render()
 {
     SDL_RenderClear(renderer);
     // Add content to render, content is rendered from back to front
-    map->DrawMap();
+    // map->DrawMap();
     manager.draw();
     SDL_RenderPresent(renderer);
 }
