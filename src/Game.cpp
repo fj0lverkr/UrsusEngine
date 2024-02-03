@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "TiledMap.h"
+#include "Collision.h"
 
 #include "ECS/Components.h"
 
@@ -74,6 +75,12 @@ void Game::update()
 {
     manager.refresh();
     manager.update();
+
+    if (Collision::AABB(player.GetComponent<ColliderComponent>().collider, wall.GetComponent<ColliderComponent>().collider))
+    {
+        player.GetComponent<TransformComponent>().velocity * -1;
+        std::cout << "player collides with wall" << std::endl;
+    }
 }
 
 void Game::render()

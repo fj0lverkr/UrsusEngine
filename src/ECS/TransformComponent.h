@@ -14,7 +14,7 @@ struct TransformComponent : public Component
 
     TransformComponent()
     {
-        position.zero();
+        position.Zero();
         width = height = 32;
         scale = 1;
         speed = 3;
@@ -60,7 +60,7 @@ struct TransformComponent : public Component
 
     void init() override
     {
-        velocity.zero();
+        velocity.Zero();
     }
 
     void update() override
