@@ -9,6 +9,7 @@ SDL_Event Game::event;
 
 Manager manager;
 auto &player(manager.addEntity());
+auto &wall(manager.addEntity());
 
 Game::Game()
 {
@@ -46,9 +47,13 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     map = new TiledMap();
 
-    player.addComponent<TransformComponent>(10, 10);
+    player.addComponent<TransformComponent>(10, 10, 32, 32, 2);
     player.addComponent<SpriteComponent>("assets/player_sprite.png");
+    player.addComponent<ColliderComponent>("player");
     player.addComponent<KeyboardController>();
+    wall.addComponent<TransformComponent>(300, 300, 20, 300, 1);
+    wall.addComponent<SpriteComponent>("assets/map/dirt.png");
+    wall.addComponent<ColliderComponent>("wall");
 }
 
 void Game::handleEvents()
