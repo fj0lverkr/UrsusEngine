@@ -35,6 +35,9 @@ TiledMap::TiledMap()
 
 TiledMap::~TiledMap()
 {
+    SDL_DestroyTexture(dirtTexture);
+    SDL_DestroyTexture(grassTexture);
+    SDL_DestroyTexture(waterTexture);
 }
 
 void TiledMap::LoadMap(int arr[20][25])

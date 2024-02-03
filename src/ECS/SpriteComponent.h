@@ -19,6 +19,11 @@ public:
         swapTexture(path);
     }
 
+    ~SpriteComponent()
+    {
+        SDL_DestroyTexture(texture);
+    }
+
     void init() override
     {
         transform = &entity->GetComponent<TransformComponent>();
