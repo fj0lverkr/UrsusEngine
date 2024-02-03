@@ -5,6 +5,7 @@
 
 TiledMap *map;
 SDL_Renderer *Game::renderer = nullptr;
+SDL_Event Game::event;
 
 Manager manager;
 auto &player(manager.addEntity());
@@ -47,11 +48,11 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     player.addComponent<TransformComponent>(10, 10);
     player.addComponent<SpriteComponent>("assets/player_sprite.png");
+    player.addComponent<KeyboardController>();
 }
 
 void Game::handleEvents()
 {
-    SDL_Event event;
     SDL_PollEvent(&event);
     switch (event.type)
     {
