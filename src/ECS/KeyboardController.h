@@ -2,9 +2,8 @@
 #include "../Game.h"
 #include "Components.h"
 
-class KeyboardController : public Component
+struct KeyboardController : public Component
 {
-public:
     TransformComponent *transform;
 
     void init() override
