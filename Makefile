@@ -5,7 +5,7 @@ OBJS = main.cpp src/Game.cpp src/TextureManager.cpp src/TiledMap.cpp src/Vector2
 CC = g++
 
 #INCLUDE_PATHS specifies the additional include paths we'll need
-INCLUDE_PATHS = -I C:/src/SDL2/include -I src
+INCLUDE_PATHS = -I C:/src/SDL2/include -I C:/src/boost -I src
 
 #LIBRARY_PATHS specifies the additional library paths we'll need
 LIBRARY_PATHS = -L C:/src/SDL2/lib
@@ -16,7 +16,7 @@ LIBRARY_PATHS = -L C:/src/SDL2/lib
 COMPILER_FLAGS = -w
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lbcrypt
 
 #OBJ_NAME specifies the name of our exectuable
 OBJ_NAME = main
