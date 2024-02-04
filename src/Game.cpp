@@ -59,7 +59,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     TiledMap::LoadMap("assets/map/testmap.map", 30, 20);
 
     player.addComponent<TransformComponent>(10, 10, 32, 32, 2);
-    player.addComponent<SpriteComponent>("assets/player_sprite.png");
+    player.addComponent<SpriteComponent>("assets/sprites/player_idle.png", 9, 100);
     player.addComponent<ColliderComponent>("player");
     player.addComponent<KeyboardController>();
     player.addGroup(groupPlayers);
