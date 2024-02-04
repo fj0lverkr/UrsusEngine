@@ -1,18 +1,10 @@
 #pragma once
+#include <string>
 
-#include "Game.h"
-
-class TiledMap
+struct TiledMap
 {
-private:
-    SDL_Rect srcRect, destRect;
-    SDL_Texture *dirtTexture, *grassTexture, *waterTexture;
-    int map[20][25];
-
-public:
     TiledMap();
     ~TiledMap();
 
-    void LoadMap(int arr[20][25]);
-    void DrawMap();
+    static void LoadMap(std::string path, int sizeX, int sizeY);
 };
