@@ -1,8 +1,8 @@
 #include "Game.h"
 #include "TiledMap.h"
 #include "Collision.h"
-
 #include "ECS/Components.h"
+#include <string>
 
 SDL_Renderer *Game::renderer = nullptr;
 SDL_Event Game::event;
@@ -12,6 +12,15 @@ std::vector<ColliderComponent *> Game::colliders;
 Manager manager;
 auto &player(manager.addEntity());
 auto &wall(manager.addEntity());
+
+// Labels for grouping Entities, we can have up to 32 Groups per Entity
+enum groupLabels : std::size_t
+{
+    groupMap,
+    groupPlayers,
+    groupEnemies,
+    groupColliders
+};
 
 Game::Game()
 {
@@ -53,10 +62,12 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player.addComponent<SpriteComponent>("assets/player_sprite.png");
     player.addComponent<ColliderComponent>("player");
     player.addComponent<KeyboardController>();
+    player.addGroup(groupPlayers);
 
     wall.addComponent<TransformComponent>(300, 300, 20, 300, 1);
-    wall.addComponent<SpriteComponent>("assets/map/dirt.png");
+    wall.addComponent<SpriteComponent>("assets/placeholder.png");
     wall.addComponent<ColliderComponent>("wall");
+    wall.addGroup(groupColliders);
 }
 
 void Game::handleEvents()
@@ -84,7 +95,8 @@ void Game::update()
         {
             if (Collision::AABB(*c, *cc))
             {
-                if (c->tag == "player" || cc->tag == "player")
+                std::string playerTag("player");
+                if (c->tag.compare(playerTag) == 0)
                 {
                     player.GetComponent<TransformComponent>().velocity * -1;
                 }
@@ -93,10 +105,30 @@ void Game::update()
     }
 }
 
+auto &mapTiles(manager.getGroup(groupMap));
+auto &players(manager.getGroup(groupPlayers));
+auto &colliderEntities(manager.getGroup(groupColliders));
+auto &enemies(manager.getGroup(groupEnemies));
+
 void Game::render()
 {
     SDL_RenderClear(renderer);
-    manager.draw();
+    for (auto &t : mapTiles)
+    {
+        t->draw();
+    }
+    for (auto &p : players)
+    {
+        p->draw();
+    }
+    for (auto &e : enemies)
+    {
+        e->draw();
+    }
+    for (auto &c : colliderEntities)
+    {
+        c->draw();
+    }
     SDL_RenderPresent(renderer);
 }
 
@@ -116,4 +148,5 @@ void Game::AddTile(int tileTypeId, int x, int y)
 {
     auto &tile(manager.addEntity());
     tile.addComponent<TileComponent>(x, y, 32, 32, tileTypeId);
+    tile.addGroup(groupMap);
 }
