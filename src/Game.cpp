@@ -11,7 +11,8 @@ std::vector<ColliderComponent *> Game::colliders;
 
 Manager manager;
 auto &player(manager.addEntity());
-auto &wall(manager.addEntity());
+
+const char *mapTileset = "assets/map/tiles.png";
 
 // Labels for grouping Entities, we can have up to 32 Groups per Entity
 enum groupLabels : std::size_t
@@ -56,18 +57,13 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
 
-    TiledMap::LoadMap("assets/map/testmap.map", 30, 20);
+    TiledMap::LoadMap("assets/map/testmap.map", 30, 20, 2);
 
     player.addComponent<TransformComponent>(10, 10, 32, 32, 2);
     player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true);
     player.addComponent<ColliderComponent>("player");
     player.addComponent<KeyboardController>();
     player.addGroup(groupPlayers);
-
-    wall.addComponent<TransformComponent>(300, 300, 20, 300, 1);
-    wall.addComponent<SpriteComponent>("assets/placeholder.png");
-    wall.addComponent<ColliderComponent>("wall");
-    wall.addGroup(groupColliders);
 }
 
 void Game::handleEvents()
@@ -88,21 +84,6 @@ void Game::update()
 {
     manager.refresh();
     manager.update();
-
-    for (auto c : colliders)
-    {
-        for (auto cc : colliders)
-        {
-            if (Collision::AABB(*c, *cc))
-            {
-                std::string playerTag("player");
-                if (c->tag.compare(playerTag) == 0)
-                {
-                    player.GetComponent<TransformComponent>().velocity * -1;
-                }
-            }
-        }
-    }
 }
 
 auto &mapTiles(manager.getGroup(groupMap));
@@ -144,9 +125,9 @@ bool Game::running()
     return isRunning;
 }
 
-void Game::AddTile(int tileTypeId, int x, int y)
+void Game::AddTile(int srcX, int srcY, int x, int y)
 {
     auto &tile(manager.addEntity());
-    tile.addComponent<TileComponent>(x, y, 32, 32, tileTypeId);
+    tile.addComponent<TileComponent>(srcX, srcY, x, y, mapTileset, 2);
     tile.addGroup(groupMap);
 }

@@ -6,5 +6,5 @@ struct TiledMap
     TiledMap();
     ~TiledMap();
 
-    static void LoadMap(std::string path, int sizeX, int sizeY);
+    static void LoadMap(std::string path, int sizeX, int sizeY, int scaleFactor);
 };

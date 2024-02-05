@@ -10,18 +10,24 @@ TiledMap::~TiledMap()
 {
 }
 
-void TiledMap::LoadMap(std::string path, int sizeX, int sizeY)
+void TiledMap::LoadMap(std::string path, int sizeX, int sizeY, int scaleFactor)
 {
-    char tile;
+    int scale = scaleFactor > 1 ? scaleFactor : 1;
+    char c;
     std::fstream mapfile;
     mapfile.open(path);
+
+    int srcX, srcY;
 
     for (int y = 0; y < sizeY; y++)
     {
         for (int x = 0; x < sizeX; x++)
         {
-            mapfile.get(tile);
-            Game::AddTile(atoi(&tile), x * 32, y * 32);
+            mapfile.get(c);
+            srcY = atoi(&c) * 32;
+            mapfile.get(c);
+            srcX = atoi(&c) * 32;
+            Game::AddTile(srcX, srcY, x * 32 * scaleFactor, y * 32 * scale);
             mapfile.ignore(); // skip comma's
         }
     }
