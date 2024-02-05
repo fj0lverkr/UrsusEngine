@@ -44,6 +44,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
         if (window)
         {
+            windowWidth = width;
+            windowHeight = height;
             renderer = SDL_CreateRenderer(window, -1, 0);
             if (renderer)
             {
@@ -59,7 +61,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     TiledMap::LoadMap("assets/map/testmap.map", 30, 20, 2);
 
-    player.addComponent<TransformComponent>(10, 10, 32, 32, 2);
+    player.addComponent<TransformComponent>(windowWidth / 2, windowHeight / 2, 32, 32, 2);
     player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true);
     player.addComponent<ColliderComponent>("player");
     player.addComponent<KeyboardController>();

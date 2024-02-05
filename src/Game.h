@@ -13,6 +13,7 @@ private:
     bool isRunning;
     SDL_Window *window;
     int cnt = 0;
+    int windowWidth, windowHeight;
 
 public:
     Game(/* args */);
