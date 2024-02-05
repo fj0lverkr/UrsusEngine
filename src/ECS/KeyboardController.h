@@ -1,9 +1,14 @@
 #pragma once
 #include "../Game.h"
 #include "Components.h"
+#include <set>
 
-struct KeyboardController : public Component
+class KeyboardController : public Component
 {
+private:
+    std::set<SDL_Keycode> pressedKeys;
+
+public:
     TransformComponent *transform;
     SpriteComponent *sprite;
 
@@ -20,19 +25,23 @@ struct KeyboardController : public Component
             switch (Game::event.key.keysym.sym)
             {
             case SDLK_w:
+                pressedKeys.emplace(Game::event.key.keysym.sym); // elements in a set are always unique, so we can just add it.
                 transform->velocity.y = -1;
                 sprite->Play("WalkSide");
                 break;
             case SDLK_a:
+                pressedKeys.emplace(Game::event.key.keysym.sym);
                 transform->velocity.x = -1;
                 sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
                 sprite->Play("WalkSide");
                 break;
             case SDLK_s:
+                pressedKeys.emplace(Game::event.key.keysym.sym);
                 transform->velocity.y = 1;
                 sprite->Play("WalkSide");
                 break;
             case SDLK_d:
+                pressedKeys.emplace(Game::event.key.keysym.sym);
                 transform->velocity.x = 1;
                 sprite->spriteFlip = SDL_FLIP_NONE;
                 sprite->Play("WalkSide");
@@ -49,20 +58,53 @@ struct KeyboardController : public Component
             switch (Game::event.key.keysym.sym)
             {
             case SDLK_w:
-                transform->velocity.y = 0;
-                sprite->Play("Idle");
+                pressedKeys.erase(pressedKeys.find(Game::event.key.keysym.sym));
+                if (pressedKeys.find(SDLK_s) == pressedKeys.end())
+                {
+                    transform->velocity.y = 0;
+                    sprite->Play("Idle");
+                }
+                else
+                {
+                    transform->velocity.y *= -1;
+                }
+
                 break;
             case SDLK_a:
-                transform->velocity.x = 0;
-                sprite->Play("Idle");
+                pressedKeys.erase(pressedKeys.find(Game::event.key.keysym.sym));
+                if (pressedKeys.find(SDLK_d) == pressedKeys.end())
+                {
+                    transform->velocity.x = 0;
+                    sprite->Play("Idle");
+                }
+                else
+                {
+                    transform->velocity.x *= -1;
+                }
                 break;
             case SDLK_s:
-                transform->velocity.y = 0;
-                sprite->Play("Idle");
+                pressedKeys.erase(pressedKeys.find(Game::event.key.keysym.sym));
+                if (pressedKeys.find(SDLK_w) == pressedKeys.end())
+                {
+                    transform->velocity.y = 0;
+                    sprite->Play("Idle");
+                }
+                else
+                {
+                    transform->velocity.y *= -1;
+                }
                 break;
             case SDLK_d:
-                transform->velocity.x = 0;
-                sprite->Play("Idle");
+                pressedKeys.erase(pressedKeys.find(Game::event.key.keysym.sym));
+                if (pressedKeys.find(SDLK_a) == pressedKeys.end())
+                {
+                    transform->velocity.x = 0;
+                    sprite->Play("Idle");
+                }
+                else
+                {
+                    transform->velocity.x *= -1;
+                }
                 break;
             default:
                 break;
