@@ -29,6 +29,11 @@ private:
         }
     }
 
+    bool isMovementKey(SDL_Keycode refKeycode)
+    {
+        return refKeycode == SDLK_w || refKeycode == SDLK_a || refKeycode == SDLK_s || refKeycode == SDLK_d;
+    }
+
 public:
     TransformComponent *transform;
     SpriteComponent *sprite;
@@ -72,7 +77,10 @@ public:
             default:
                 break;
             }
-            transform->velocity.Normalize();
+            if (isMovementKey(Game::event.key.keysym.sym))
+            {
+                transform->velocity.Normalize();
+            }
         }
 
         if (Game::event.type == SDL_KEYUP)
@@ -154,7 +162,7 @@ public:
             default:
                 break;
             }
-            if (transform->velocity.y != 0 || transform->velocity.x != 0)
+            if ((transform->velocity.y != 0 || transform->velocity.x != 0) && isMovementKey(Game::event.key.keysym.sym))
             {
                 transform->velocity.Normalize();
             }
