@@ -8,6 +8,27 @@ class KeyboardController : public Component
 private:
     std::set<SDL_Keycode> pressedKeys;
 
+    bool isDiagonal(SDL_Keycode refKeycode)
+    {
+        switch (refKeycode)
+        {
+        case SDLK_w:
+            return pressedKeys.find(SDLK_a) != pressedKeys.end() || pressedKeys.find(SDLK_d) != pressedKeys.end();
+            break;
+        case SDLK_a:
+            return pressedKeys.find(SDLK_w) != pressedKeys.end() || pressedKeys.find(SDLK_s) != pressedKeys.end();
+            break;
+        case SDLK_s:
+            return pressedKeys.find(SDLK_a) != pressedKeys.end() || pressedKeys.find(SDLK_d) != pressedKeys.end();
+            break;
+        case SDLK_d:
+            return pressedKeys.find(SDLK_w) != pressedKeys.end() || pressedKeys.find(SDLK_s) != pressedKeys.end();
+            break;
+        default:
+            break;
+        }
+    }
+
 public:
     TransformComponent *transform;
     SpriteComponent *sprite;
@@ -51,6 +72,7 @@ public:
             default:
                 break;
             }
+            transform->velocity.Normalize();
         }
 
         if (Game::event.type == SDL_KEYUP)
@@ -62,7 +84,10 @@ public:
                 if (pressedKeys.find(SDLK_s) == pressedKeys.end())
                 {
                     transform->velocity.y = 0;
-                    sprite->Play("Idle");
+                    if (!isDiagonal(Game::event.key.keysym.sym))
+                    {
+                        sprite->Play("Idle");
+                    }
                 }
                 else
                 {
@@ -71,14 +96,16 @@ public:
                         transform->velocity.y *= -1;
                     }
                 }
-
                 break;
             case SDLK_a:
                 pressedKeys.erase(pressedKeys.find(Game::event.key.keysym.sym));
                 if (pressedKeys.find(SDLK_d) == pressedKeys.end())
                 {
                     transform->velocity.x = 0;
-                    sprite->Play("Idle");
+                    if (!isDiagonal(Game::event.key.keysym.sym))
+                    {
+                        sprite->Play("Idle");
+                    }
                 }
                 else
                 {
@@ -93,7 +120,10 @@ public:
                 if (pressedKeys.find(SDLK_w) == pressedKeys.end())
                 {
                     transform->velocity.y = 0;
-                    sprite->Play("Idle");
+                    if (!isDiagonal(Game::event.key.keysym.sym))
+                    {
+                        sprite->Play("Idle");
+                    }
                 }
                 else
                 {
@@ -108,7 +138,10 @@ public:
                 if (pressedKeys.find(SDLK_a) == pressedKeys.end())
                 {
                     transform->velocity.x = 0;
-                    sprite->Play("Idle");
+                    if (!isDiagonal(Game::event.key.keysym.sym))
+                    {
+                        sprite->Play("Idle");
+                    }
                 }
                 else
                 {
@@ -120,6 +153,10 @@ public:
                 break;
             default:
                 break;
+            }
+            if (transform->velocity.y != 0 || transform->velocity.x != 0)
+            {
+                transform->velocity.Normalize();
             }
         }
     }

@@ -1,4 +1,5 @@
 #include "Vector2D.h"
+#include <math.h>
 
 Vector2D::Vector2D()
 {
@@ -14,6 +15,15 @@ Vector2D::Vector2D(float x, float y)
 Vector2D &Vector2D::Zero()
 {
     this->x = this->y = 0.0f;
+    return *this;
+}
+
+Vector2D &Vector2D::Normalize()
+{
+    double L = sqrt(this->x * this->x + this->y * this->y);
+    this->x /= L;
+    this->y /= L;
+
     return *this;
 }
 

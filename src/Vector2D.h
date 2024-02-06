@@ -29,5 +29,7 @@ struct Vector2D
 
     Vector2D &Zero();
 
+    Vector2D &Normalize();
+
     friend std::ostream &operator<<(std::ostream &stream, const Vector2D &vec);
 };
