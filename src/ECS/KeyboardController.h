@@ -66,7 +66,10 @@ public:
                 }
                 else
                 {
-                    transform->velocity.y *= -1;
+                    if (transform->velocity.y < 0)
+                    {
+                        transform->velocity.y *= -1;
+                    }
                 }
 
                 break;
@@ -79,7 +82,10 @@ public:
                 }
                 else
                 {
-                    transform->velocity.x *= -1;
+                    if (transform->velocity.x < 0)
+                    {
+                        transform->velocity.x *= -1;
+                    }
                 }
                 break;
             case SDLK_s:
@@ -91,7 +97,10 @@ public:
                 }
                 else
                 {
-                    transform->velocity.y *= -1;
+                    if (transform->velocity.y > 0)
+                    {
+                        transform->velocity.y *= -1;
+                    }
                 }
                 break;
             case SDLK_d:
@@ -103,7 +112,10 @@ public:
                 }
                 else
                 {
-                    transform->velocity.x *= -1;
+                    if (transform->velocity.x > 0)
+                    {
+                        transform->velocity.x *= -1;
+                    }
                 }
                 break;
             default:
