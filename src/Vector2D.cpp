@@ -18,6 +18,11 @@ Vector2D &Vector2D::Zero()
     return *this;
 }
 
+bool Vector2D::IsZero()
+{
+    return this->x == 0.0f && this->y == 0.0f;
+}
+
 Vector2D &Vector2D::Normalize()
 {
     float L = sqrtf(this->x * this->x + this->y * this->y);

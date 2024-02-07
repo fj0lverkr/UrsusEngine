@@ -28,6 +28,7 @@ struct Vector2D
     Vector2D &operator*(const int &i);
 
     Vector2D &Zero();
+    bool IsZero();
 
     Vector2D &Normalize();
 
