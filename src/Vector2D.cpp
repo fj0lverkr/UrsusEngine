@@ -20,7 +20,7 @@ Vector2D &Vector2D::Zero()
 
 Vector2D &Vector2D::Normalize()
 {
-    double L = sqrt(this->x * this->x + this->y * this->y);
+    float L = sqrtf(this->x * this->x + this->y * this->y);
     this->x /= L;
     this->y /= L;
 

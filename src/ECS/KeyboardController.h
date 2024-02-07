@@ -77,10 +77,6 @@ public:
             default:
                 break;
             }
-            if (isMovementKey(Game::event.key.keysym.sym))
-            {
-                transform->velocity.Normalize();
-            }
         }
 
         if (Game::event.type == SDL_KEYUP)
@@ -161,10 +157,6 @@ public:
                 break;
             default:
                 break;
-            }
-            if ((transform->velocity.y != 0 || transform->velocity.x != 0) && isMovementKey(Game::event.key.keysym.sym))
-            {
-                transform->velocity.Normalize();
             }
         }
     }
