@@ -25,9 +25,12 @@ bool Vector2D::IsZero()
 
 Vector2D &Vector2D::Normalize()
 {
-    float L = sqrtf(this->x * this->x + this->y * this->y);
-    this->x /= L;
-    this->y /= L;
+    if (this->x != 0 && this->y != 0)
+    {
+        float L = sqrtf(this->x * this->x + this->y * this->y);
+        this->x /= L;
+        this->y /= L;
+    }
 
     return *this;
 }

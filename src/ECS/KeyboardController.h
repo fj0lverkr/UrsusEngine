@@ -13,6 +13,41 @@ private:
         return refKeycode == SDLK_w || refKeycode == SDLK_a || refKeycode == SDLK_s || refKeycode == SDLK_d;
     }
 
+    void doMovement()
+    {
+        transform->velocity.Zero();
+        for (auto key : pressedKeys)
+        {
+            if (isMovementKey(key))
+            {
+                switch (key)
+                {
+                case SDLK_w:
+                    transform->velocity.y = -1;
+                    sprite->Play("WalkSide");
+                    break;
+                case SDLK_a:
+                    transform->velocity.x = -1;
+                    sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
+                    sprite->Play("WalkSide");
+                    break;
+                case SDLK_s:
+                    transform->velocity.y = 1;
+                    sprite->Play("WalkSide");
+                    break;
+                case SDLK_d:
+                    transform->velocity.x = 1;
+                    sprite->spriteFlip = SDL_FLIP_NONE;
+                    sprite->Play("WalkSide");
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+        transform->velocity.Normalize();
+    }
+
 public:
     TransformComponent *transform;
     SpriteComponent *sprite;
@@ -27,30 +62,11 @@ public:
     {
         if (Game::event.type == SDL_KEYDOWN)
         {
+            pressedKeys.emplace(Game::event.key.keysym.sym); // elements in a set are always unique, so we can just add it.
+
+            // Movement keys are handled differently, all other keys go here:
             switch (Game::event.key.keysym.sym)
             {
-            case SDLK_w:
-                pressedKeys.emplace(Game::event.key.keysym.sym); // elements in a set are always unique, so we can just add it.
-                transform->velocity.y = -1;
-                sprite->Play("WalkSide");
-                break;
-            case SDLK_a:
-                pressedKeys.emplace(Game::event.key.keysym.sym);
-                transform->velocity.x = -1;
-                sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
-                sprite->Play("WalkSide");
-                break;
-            case SDLK_s:
-                pressedKeys.emplace(Game::event.key.keysym.sym);
-                transform->velocity.y = 1;
-                sprite->Play("WalkSide");
-                break;
-            case SDLK_d:
-                pressedKeys.emplace(Game::event.key.keysym.sym);
-                transform->velocity.x = 1;
-                sprite->spriteFlip = SDL_FLIP_NONE;
-                sprite->Play("WalkSide");
-                break;
             case SDLK_ESCAPE:
                 break;
             default:
@@ -60,71 +76,17 @@ public:
 
         if (Game::event.type == SDL_KEYUP)
         {
-            switch (Game::event.key.keysym.sym)
-            {
-            case SDLK_w:
-                pressedKeys.erase(pressedKeys.find(Game::event.key.keysym.sym));
-                if (pressedKeys.find(SDLK_s) == pressedKeys.end())
-                {
-                    transform->velocity.y = 0;
-                }
-                else
-                {
-                    if (transform->velocity.y < 0)
-                    {
-                        transform->velocity.y = 1;
-                    }
-                }
-                break;
-            case SDLK_a:
-                pressedKeys.erase(pressedKeys.find(Game::event.key.keysym.sym));
-                if (pressedKeys.find(SDLK_d) == pressedKeys.end())
-                {
-                    transform->velocity.x = 0;
-                }
-                else
-                {
-                    if (transform->velocity.x < 0)
-                    {
-                        transform->velocity.x = 1;
-                    }
-                }
-                break;
-            case SDLK_s:
-                pressedKeys.erase(pressedKeys.find(Game::event.key.keysym.sym));
-                if (pressedKeys.find(SDLK_w) == pressedKeys.end())
-                {
-                    transform->velocity.y = 0;
-                }
-                else
-                {
-                    if (transform->velocity.y > 0)
-                    {
-                        transform->velocity.y = -1;
-                    }
-                }
-                break;
-            case SDLK_d:
-                pressedKeys.erase(pressedKeys.find(Game::event.key.keysym.sym));
-                if (pressedKeys.find(SDLK_a) == pressedKeys.end())
-                {
-                    transform->velocity.x = 0;
-                }
-                else
-                {
-                    if (transform->velocity.x > 0)
-                    {
-                        transform->velocity.x = -1;
-                    }
-                }
-                break;
-            default:
-                break;
-            }
-            if (transform->velocity.IsZero())
-            {
-                sprite->Play("Idle");
-            }
+            // remove the lifted key from the set of pressed keys
+            pressedKeys.erase(pressedKeys.find(Game::event.key.keysym.sym));
+        }
+
+        // Handle Movement
+        doMovement();
+
+        // Reset sprite
+        if (transform->velocity.IsZero())
+        {
+            sprite->Play("Idle");
         }
     }
 };
