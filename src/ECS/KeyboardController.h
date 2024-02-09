@@ -26,21 +26,15 @@ struct KeyboardController : public Component
                     {
                     case SDLK_w:
                         transform->velocity.y = -1;
-                        sprite->Play("WalkSide");
                         break;
                     case SDLK_a:
                         transform->velocity.x = -1;
-                        sprite->Play("WalkSide");
-                        sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
                         break;
                     case SDLK_s:
                         transform->velocity.y = 1;
-                        sprite->Play("WalkSide");
                         break;
                     case SDLK_d:
                         transform->velocity.x = 1;
-                        sprite->Play("WalkSide");
-                        sprite->spriteFlip = SDL_FLIP_NONE;
                         break;
                     default:
                         break;
@@ -89,14 +83,23 @@ struct KeyboardController : public Component
                 Game::isRunning = false;
             }
 
-            // Reset sprite
             if (transform->velocity.IsZero())
             {
                 sprite->Play("Idle");
             }
             else
             {
-                // Scrolling tiles should be used without normalization (for now at least).
+                // set the correct animation
+                if (transform->velocity.x == 0)
+                {
+                    sprite->Play("WalkFront");
+                    sprite->spriteFlip = transform->velocity.y > 0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+                }
+                else
+                {
+                    sprite->Play("WalkSide");
+                    sprite->spriteFlip = transform->velocity.x > 0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+                }
                 transform->velocity.Normalize();
             }
         }
