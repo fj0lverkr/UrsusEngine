@@ -5,11 +5,11 @@
 #include <string>
 
 SDL_Renderer *Game::renderer = nullptr;
-SDL_Event Game::event;
 
 std::vector<ColliderComponent *> Game::colliders;
 
 bool Game::isRunning = false;
+SDL_Rect Game::camera;
 
 Manager manager;
 auto &player(manager.addEntity());
@@ -58,6 +58,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
             {
                 SDL_SetRenderDrawColor(renderer, rendererColor.r, rendererColor.g, rendererColor.b, rendererColor.a);
                 isRunning = true;
+                Game::camera = {0, 0, width, height};
             }
         }
     }
@@ -80,13 +81,23 @@ void Game::update()
     manager.refresh();
     manager.update();
 
-    Vector2D playerVelocity = player.GetComponent<TransformComponent>().velocity;
-    int playerSpeed = player.GetComponent<TransformComponent>().speed;
-
-    for (auto tile : mapTiles)
+    camera.x = player.GetComponent<TransformComponent>().position.x - windowWidth / 2;
+    camera.y = player.GetComponent<TransformComponent>().position.y - windowHeight / 2;
+    if (camera.x < 0)
     {
-        tile->GetComponent<TileComponent>().destRect.x += -(playerVelocity.x * playerSpeed);
-        tile->GetComponent<TileComponent>().destRect.y += -(playerVelocity.y * playerSpeed);
+        camera.x = 0;
+    }
+    if (camera.y < 0)
+    {
+        camera.y = 0;
+    }
+    if (camera.x > camera.w)
+    {
+        camera.x = camera.w;
+    }
+    if (camera.y > camera.h)
+    {
+        camera.y = camera.h;
     }
 }
 

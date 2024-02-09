@@ -12,6 +12,7 @@ private:
 public:
     SDL_Texture *texture;
     SDL_Rect srcRect, destRect;
+    Vector2D position;
 
     TileComponent() = default;
 
@@ -30,6 +31,14 @@ public:
         destRect.x = posX;
         destRect.y = posY;
         destRect.w = destRect.h = 32 * scale;
+        position.x = posX;
+        position.y = posY;
+    }
+
+    void update() override
+    {
+        destRect.x = position.x - Game::camera.x;
+        destRect.y = position.y - Game::camera.y;
     }
 
     void draw() override

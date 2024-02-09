@@ -97,7 +97,7 @@ struct KeyboardController : public Component
             else
             {
                 // Scrolling tiles should be used without normalization (for now at least).
-                // transform->velocity.Normalize();
+                transform->velocity.Normalize();
             }
         }
     }
