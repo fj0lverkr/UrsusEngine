@@ -34,8 +34,8 @@ public:
         animated = isAnimated;
 
         Animation idle = Animation(0, 9, 100);
-        Animation walk_side = Animation(1, 6, 100);
-        Animation walk_front = Animation(2, 6, 100);
+        Animation walk_side = Animation(1, 7, 100);
+        Animation walk_front = Animation(2, 7, 100);
 
         animations.emplace("Idle", idle);
         animations.emplace("WalkSide", walk_side);
