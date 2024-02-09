@@ -19,11 +19,10 @@ int main(int argc, char *argv[])
 
     game = new Game();
     game->init(WINDOWTITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOWW, WINDOWH, false, WINDOWBG);
-    while (game->running())
+    while (game->isRunning)
     {
         frameStart = SDL_GetTicks64();
 
-        game->handleEvents();
         game->update();
         game->render();
 

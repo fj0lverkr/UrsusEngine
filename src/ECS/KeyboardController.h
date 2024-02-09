@@ -1,56 +1,12 @@
 #pragma once
 #include "../Game.h"
 #include "Components.h"
-#include <set>
 
-class KeyboardController : public Component
+struct KeyboardController : public Component
 {
-private:
-    std::set<SDL_Keycode> pressedKeys;
-
-    bool isMovementKey(SDL_Keycode refKeycode)
-    {
-        return refKeycode == SDLK_w || refKeycode == SDLK_a || refKeycode == SDLK_s || refKeycode == SDLK_d;
-    }
-
-    void doMovement()
-    {
-        transform->velocity.Zero();
-        for (auto key : pressedKeys)
-        {
-            if (isMovementKey(key))
-            {
-                switch (key)
-                {
-                case SDLK_w:
-                    transform->velocity.y = -1;
-                    sprite->Play("WalkSide");
-                    break;
-                case SDLK_a:
-                    transform->velocity.x = -1;
-                    sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
-                    sprite->Play("WalkSide");
-                    break;
-                case SDLK_s:
-                    transform->velocity.y = 1;
-                    sprite->Play("WalkSide");
-                    break;
-                case SDLK_d:
-                    transform->velocity.x = 1;
-                    sprite->spriteFlip = SDL_FLIP_NONE;
-                    sprite->Play("WalkSide");
-                    break;
-                default:
-                    break;
-                }
-            }
-        }
-        transform->velocity.Normalize();
-    }
-
-public:
     TransformComponent *transform;
     SpriteComponent *sprite;
+    SDL_Event event;
 
     void init() override
     {
@@ -60,33 +16,89 @@ public:
 
     void update() override
     {
-        if (Game::event.type == SDL_KEYDOWN)
+        while (SDL_PollEvent(&event))
         {
-            pressedKeys.emplace(Game::event.key.keysym.sym); // elements in a set are always unique, so we can just add it.
-
-            // Movement keys are handled differently, all other keys go here:
-            switch (Game::event.key.keysym.sym)
+            if (event.key.repeat == 0)
             {
-            case SDLK_ESCAPE:
-                break;
-            default:
-                break;
+                if (event.type == SDL_KEYDOWN)
+                {
+                    switch (event.key.keysym.sym)
+                    {
+                    case SDLK_w:
+                        transform->velocity.y = -1;
+                        sprite->Play("WalkSide");
+                        break;
+                    case SDLK_a:
+                        transform->velocity.x = -1;
+                        sprite->Play("WalkSide");
+                        sprite->spriteFlip = SDL_FLIP_HORIZONTAL;
+                        break;
+                    case SDLK_s:
+                        transform->velocity.y = 1;
+                        sprite->Play("WalkSide");
+                        break;
+                    case SDLK_d:
+                        transform->velocity.x = 1;
+                        sprite->Play("WalkSide");
+                        sprite->spriteFlip = SDL_FLIP_NONE;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+
+                if (event.type == SDL_KEYUP)
+                {
+                    switch (event.key.keysym.sym)
+                    {
+                    case SDLK_w:
+                        if (transform->velocity.y < 0)
+                        {
+                            transform->velocity.y = 0;
+                        }
+                        break;
+                    case SDLK_a:
+                        if (transform->velocity.x < 0)
+                        {
+                            transform->velocity.x = 0;
+                        }
+                        break;
+                    case SDLK_s:
+                        if (transform->velocity.y > 0)
+                        {
+                            transform->velocity.y = 0;
+                        }
+                        break;
+                    case SDLK_d:
+                        if (transform->velocity.x > 0)
+                        {
+                            transform->velocity.x = 0;
+                        }
+                        break;
+                    case SDLK_ESCAPE:
+                        Game::isRunning = false;
+                        break;
+                    default:
+                        break;
+                    }
+                }
             }
-        }
 
-        if (Game::event.type == SDL_KEYUP)
-        {
-            // remove the lifted key from the set of pressed keys
-            pressedKeys.erase(pressedKeys.find(Game::event.key.keysym.sym));
-        }
+            if (event.type == SDL_QUIT)
+            {
+                Game::isRunning = false;
+            }
 
-        // Handle Movement
-        doMovement();
-
-        // Reset sprite
-        if (transform->velocity.IsZero())
-        {
-            sprite->Play("Idle");
+            // Reset sprite
+            if (transform->velocity.IsZero())
+            {
+                sprite->Play("Idle");
+            }
+            else
+            {
+                // Scrolling tiles should be used without normalization (for now at least).
+                // transform->velocity.Normalize();
+            }
         }
     }
 };

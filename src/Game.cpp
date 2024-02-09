@@ -9,6 +9,8 @@ SDL_Event Game::event;
 
 std::vector<ColliderComponent *> Game::colliders;
 
+bool Game::isRunning = false;
+
 Manager manager;
 auto &player(manager.addEntity());
 
@@ -22,6 +24,11 @@ enum groupLabels : std::size_t
     groupEnemies,
     groupColliders
 };
+
+auto &mapTiles(manager.getGroup(groupMap));
+auto &players(manager.getGroup(groupPlayers));
+auto &colliderEntities(manager.getGroup(groupColliders));
+auto &enemies(manager.getGroup(groupEnemies));
 
 Game::Game()
 {
@@ -68,30 +75,20 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player.addGroup(groupPlayers);
 }
 
-void Game::handleEvents()
-{
-    SDL_PollEvent(&event);
-    switch (event.type)
-    {
-    case SDL_QUIT:
-        isRunning = false;
-        break;
-
-    default:
-        break;
-    }
-}
-
 void Game::update()
 {
     manager.refresh();
     manager.update();
-}
 
-auto &mapTiles(manager.getGroup(groupMap));
-auto &players(manager.getGroup(groupPlayers));
-auto &colliderEntities(manager.getGroup(groupColliders));
-auto &enemies(manager.getGroup(groupEnemies));
+    Vector2D playerVelocity = player.GetComponent<TransformComponent>().velocity;
+    int playerSpeed = player.GetComponent<TransformComponent>().speed;
+
+    for (auto tile : mapTiles)
+    {
+        tile->GetComponent<TileComponent>().destRect.x += -(playerVelocity.x * playerSpeed);
+        tile->GetComponent<TileComponent>().destRect.y += -(playerVelocity.y * playerSpeed);
+    }
+}
 
 void Game::render()
 {
@@ -120,11 +117,6 @@ void Game::clean()
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
-}
-
-bool Game::running()
-{
-    return isRunning;
 }
 
 void Game::AddTile(int srcX, int srcY, int x, int y)

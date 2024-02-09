@@ -65,11 +65,5 @@ struct TransformComponent : public Component
 
     void update() override
     {
-        if (velocity.x != 0.0f && velocity.y != 0.0f)
-        {
-            // velocity.Normalize();
-        }
-        position.x += velocity.x * speed;
-        position.y += velocity.y * speed;
     }
 };

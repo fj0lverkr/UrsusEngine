@@ -10,7 +10,6 @@ class ColliderComponent;
 class Game
 {
 private:
-    bool isRunning;
     SDL_Window *window;
     int cnt = 0;
     int windowWidth, windowHeight;
@@ -20,15 +19,13 @@ public:
     ~Game();
 
     void init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen, SDL_Color rendererColor);
-    void handleEvents();
     void update();
     void render();
     void clean();
-
-    bool running();
 
     static void AddTile(int srcX, int srcY, int x, int y);
     static SDL_Renderer *renderer;
     static SDL_Event event;
     static std::vector<ColliderComponent *> colliders;
+    static bool isRunning;
 };
