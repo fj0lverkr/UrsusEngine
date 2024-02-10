@@ -67,7 +67,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
 
-    TiledMap::LoadMap("assets/map/testmap.map", 30, 20, 2);
+    TiledMap::LoadMap("assets/map/testmap.map", 30, 20, 32, 2);
 
     player.addComponent<TransformComponent>(windowWidth / 2, windowHeight / 2, 32, 32, 2);
     player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true);
@@ -116,6 +116,6 @@ void Game::clean()
 void Game::AddTile(int srcX, int srcY, int x, int y)
 {
     auto &tile(manager.addEntity());
-    tile.addComponent<TileComponent>(srcX, srcY, x, y, mapTileset, 2);
+    tile.addComponent<TileComponent>(srcX, srcY, x, y, mapTileset, 32, 2);
     tile.addGroup(groupMap);
 }

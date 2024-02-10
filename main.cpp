@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
     // Initial window Settings
     const char *WINDOWTITLE = "Ursus Engine";
-    const int WINDOWW = 800;
+    const int WINDOWW = 960;
     const int WINDOWH = 640;
     const SDL_Color WINDOWBG = {255, 255, 255, 255};
 
