@@ -9,7 +9,7 @@ SDL_Renderer *Game::renderer = nullptr;
 std::vector<ColliderComponent *> Game::colliders;
 
 bool Game::isRunning = false;
-SDL_Rect Game::camera;
+Camera2D Game::camera;
 
 Manager manager;
 auto &player(manager.addEntity());
@@ -81,24 +81,7 @@ void Game::update()
     manager.refresh();
     manager.update();
 
-    camera.x = player.GetComponent<TransformComponent>().position.x - windowWidth / 2;
-    camera.y = player.GetComponent<TransformComponent>().position.y - windowHeight / 2;
-    if (camera.x < 0)
-    {
-        camera.x = 0;
-    }
-    if (camera.y < 0)
-    {
-        camera.y = 0;
-    }
-    if (camera.x > camera.w)
-    {
-        camera.x = camera.w;
-    }
-    if (camera.y > camera.h)
-    {
-        camera.y = camera.h;
-    }
+    camera.follow(player.GetComponent<TransformComponent>().position, windowWidth, windowHeight);
 }
 
 void Game::render()

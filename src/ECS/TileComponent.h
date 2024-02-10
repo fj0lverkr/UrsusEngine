@@ -37,8 +37,8 @@ public:
 
     void update() override
     {
-        destRect.x = position.x - Game::camera.x;
-        destRect.y = position.y - Game::camera.y;
+        destRect.x = position.x - Game::camera.GetViewFinder().x;
+        destRect.y = position.y - Game::camera.GetViewFinder().y;
     }
 
     void draw() override

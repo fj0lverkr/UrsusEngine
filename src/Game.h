@@ -4,6 +4,7 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "Camera2D.h"
 
 class ColliderComponent;
 
@@ -28,5 +29,5 @@ public:
     static SDL_Event event;
     static std::vector<ColliderComponent *> colliders;
     static bool isRunning;
-    static SDL_Rect camera;
+    static Camera2D camera;
 };
