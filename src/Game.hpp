@@ -4,7 +4,7 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "Camera2D.h"
+#include "Camera2D.hpp"
 
 class ColliderComponent;
 

@@ -1,5 +1,5 @@
-#include "TiledMap.h"
-#include "Game.h"
+#include "TiledMap.hpp"
+#include "Game.hpp"
 #include <fstream>
 
 TiledMap::TiledMap()

@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "C:/src/SDL2/include",
-                "C:/src/boost"
+                "C:/src/boost",
+                "c:/src/tmxlite/include"
             ],
             "defines": [
                 "_DEBUG",

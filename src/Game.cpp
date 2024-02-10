@@ -1,7 +1,7 @@
-#include "Game.h"
-#include "TiledMap.h"
-#include "Collision.h"
-#include "ECS/Components.h"
+#include "Game.hpp"
+#include "TiledMap.hpp"
+#include "Collision.hpp"
+#include "ECS/Components.hpp"
 #include <string>
 
 SDL_Renderer *Game::renderer = nullptr;

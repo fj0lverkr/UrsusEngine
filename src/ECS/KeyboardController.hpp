@@ -1,6 +1,6 @@
 #pragma once
-#include "../Game.h"
-#include "Components.h"
+#include "../Game.hpp"
+#include "Components.hpp"
 
 struct KeyboardController : public Component
 {
