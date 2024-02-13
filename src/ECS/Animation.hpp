@@ -2,9 +2,9 @@
 
 struct Animation
 {
-    int index;
-    int frames;
-    int animationSpeed;
+    int index = 0;
+    int frames = 0;
+    int animationSpeed =0;
 
     Animation(){};
     Animation(int i, int f, int s)

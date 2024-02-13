@@ -12,7 +12,7 @@ private:
     boost::uuids::random_generator gen;
 
 public:
-    SDL_Rect collider;
+    SDL_Rect collider = {};
     std::string tag;
     std::string uuid;
 

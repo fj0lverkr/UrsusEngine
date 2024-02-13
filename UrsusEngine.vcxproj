@@ -67,8 +67,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\nilsn\Projects\CPlusPlusBasicEngine\src;C:\src\boost;C:\src\SDL2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\src\SDL2\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\src\tmxlite\include;C:\Users\nilsn\Projects\CPlusPlusBasicEngine\src;C:\src\boost;C:\src\SDL2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\src\tmxlite\lib;C:\src\SDL2\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -95,7 +95,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>C:\src\SDL2;C:\src\boost;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;bcrypt.lib;libtmxlite-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,6 +130,7 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\TiledMap.cpp" />
+    <ClCompile Include="src\TiledMapManager.cpp" />
     <ClCompile Include="src\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +147,7 @@
     <ClInclude Include="src\Game.hpp" />
     <ClInclude Include="src\TextureManager.hpp" />
     <ClInclude Include="src\TiledMap.hpp" />
+    <ClInclude Include="src\TiledMapManager.hpp" />
     <ClInclude Include="src\Vector2D.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
