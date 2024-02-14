@@ -27,7 +27,7 @@ void TiledMap::LoadMap(std::string path, int sizeX, int sizeY, int tileSize, int
             srcY = atoi(&c) * 32;
             mapfile.get(c);
             srcX = atoi(&c) * 32;
-            Game::AddTile(srcX, srcY, x * tileSize * scaleFactor, y * tileSize * scale);
+            Game::AddTile(srcX, srcY, x * tileSize * scaleFactor, y * tileSize * scaleFactor);
             mapfile.ignore(); // skip comma's
         }
     }

@@ -14,6 +14,7 @@ TiledMapManager::~TiledMapManager()
 
 void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 {
+	scaleFactor = scaleFactor < 1 ? 1 : scaleFactor;
 	tmx::Map map;
 	std::map<uint32_t, const char*> tilesetCollection;
 
@@ -21,8 +22,8 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 	{
 		//get dimensions
 		auto& mapDimensions = map.getTileCount();
-		int rows = mapDimensions.x;
-		int cols = mapDimensions.y;
+		int cols = mapDimensions.x;
+		int rows = mapDimensions.y;
 
 		auto& tileSize = map.getTileSize();
 		int tileWidth = tileSize.x;
@@ -47,11 +48,11 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 			}
 			auto* tileLayer = dynamic_cast<const tmx::TileLayer*>(layer.get());
 			auto& tiles = tileLayer->getTiles();
-			for (int y = 0; y < cols; y++)
+			for (int y = 0; y < rows; y++)
 			{
-				for (int x = 0; x < rows; x++)
+				for (int x = 0; x < cols; x++)
 				{
-					int tileIndex = x + (y * cols);
+					int tileIndex = x + (y * rows);
 					auto currentGid = tiles[tileIndex].ID;
 
 					if (currentGid == 0)
@@ -86,10 +87,10 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 					int srcX = (currentGid % (tileSheetWidth / tileWidth)) * tileWidth;
 					int srcY = (currentGid / (tileSheetWidth / tileWidth)) * tileHeight;
 
-					auto destX = x * tileWidth;
-					auto destY = y * tileHeight;
+					int posX = x * tileWidth * scaleFactor;
+					int posY = y * tileHeight * scaleFactor;
 
-					Game::AddTile(srcX, srcY, destX, destY, tilesetCollection[tilesetGid], scaleFactor);
+					Game::AddTile(srcX, srcY, posX, posY, tilesetCollection[tilesetGid],tileWidth, scaleFactor);
 				}
 			}
 		}

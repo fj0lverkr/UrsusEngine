@@ -72,7 +72,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     }
 
     //TiledMap::LoadMap("assets/map/testmap.map", 30, 20, 32, 2);
-    mapManager.loadMap(levelMap,2);
+    mapManager.loadMap(levelMap, 2);
 
     player.addComponent<TransformComponent>(windowWidth / 2, windowHeight / 2, 32, 32, 2);
     player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true);
@@ -125,9 +125,9 @@ void Game::AddTile(int srcX, int srcY, int x, int y)
     tile.addGroup(groupMap);
 }
 
-void Game::AddTile(int srcX, int srcY, int x, int y, const char *tilesetPath, int scaleFactor)
+void Game::AddTile(int srcX, int srcY, int x, int y, const char *tilesetPath, int tileSize, int scaleFactor)
 {
     auto& tile(manager.addEntity());
-    tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetPath, 32, scaleFactor);
+    tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetPath, tileSize, scaleFactor);
     tile.addGroup(groupMap);
 }
