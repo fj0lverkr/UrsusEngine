@@ -52,7 +52,7 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 			{
 				for (int x = 0; x < cols; x++)
 				{
-					int tileIndex = x + (y * rows);
+					int tileIndex = x + (y * cols);
 					auto currentGid = tiles[tileIndex].ID;
 
 					if (currentGid == 0)
