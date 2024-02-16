@@ -3,6 +3,7 @@
 #include "TextureManager.hpp"
 #include <map>
 #include <string>
+#include <vector>
 
 TiledMapManager::TiledMapManager()
 {
@@ -16,7 +17,8 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 {
 	scaleFactor = scaleFactor < 1 ? 1 : scaleFactor;
 	tmx::Map map;
-	std::map<uint32_t, const char*> tilesetCollection;
+	std::map<uint32_t, const char*> tilesetTextureCollection;
+	std::map<uint32_t, const std::vector<tmx::Tileset::Tile>> tilesetSpecialTilesCollection;
 
 	if (map.load(filePath))
 	{
@@ -34,7 +36,9 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 		for (auto& tileset : tilesets)
 		{
 			const char* imagePath = tileset.getImagePath().c_str();
-			tilesetCollection.insert(std::pair<uint32_t, const char*>(tileset.getFirstGID(), imagePath));
+			const std::vector<tmx::Tileset::Tile> specialTiles = tileset.getTiles(); 
+			tilesetTextureCollection.insert(std::pair<uint32_t, const char*>(tileset.getFirstGID(), imagePath));
+			tilesetSpecialTilesCollection.insert(std::pair<uint32_t, const std::vector<tmx::Tileset::Tile>>(tileset.getFirstGID(), specialTiles));
 		}
 
 		//get layers
@@ -62,9 +66,10 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 					}
 
 					auto tilesetGid = -1;
-					for (auto& ts : tilesetCollection) {
+					for (auto& ts : tilesetTextureCollection) {
 						if (ts.first <= currentGid) {
 							tilesetGid = ts.first;
+							
 							break;
 						}
 					}
@@ -80,7 +85,7 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 					// Find the dimensions of the tile sheet.
 					int tileSheetWidth = 0;
 					int tileSheetHeight = 0;
-					SDL_Texture *tex = TextureManager::LoadTexture(tilesetCollection[tilesetGid]);
+					SDL_Texture *tex = TextureManager::LoadTexture(tilesetTextureCollection[tilesetGid]);
 					SDL_QueryTexture(tex, NULL, NULL, &tileSheetWidth, &tileSheetHeight);
 
 					// Calculate the area on the tilesheet to draw from.
@@ -90,7 +95,8 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 					int posX = x * tileWidth * scaleFactor;
 					int posY = y * tileHeight * scaleFactor;
 
-					Game::AddTile(srcX, srcY, posX, posY, tilesetCollection[tilesetGid],tileWidth, scaleFactor);
+					Game::AddTile(srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid],tileWidth, scaleFactor);
+					// TODO: bring more meta-data into Game so we can do more with the tiles than just draw them.
 				}
 			}
 		}
