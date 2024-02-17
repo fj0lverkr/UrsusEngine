@@ -1,9 +1,6 @@
 #include "TiledMapManager.hpp"
 #include "Game.hpp"
 #include "TextureManager.hpp"
-#include <map>
-#include <string>
-#include <vector>
 
 TiledMapManager::TiledMapManager()
 {
@@ -35,10 +32,20 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 		auto& tilesets = map.getTilesets();
 		for (auto& tileset : tilesets)
 		{
+			// Grab the associated image
 			const char* imagePath = tileset.getImagePath().c_str();
-			const std::vector<tmx::Tileset::Tile> specialTiles = tileset.getTiles(); 
 			tilesetTextureCollection.insert(std::pair<uint32_t, const char*>(tileset.getFirstGID(), imagePath));
-			tilesetSpecialTilesCollection.insert(std::pair<uint32_t, const std::vector<tmx::Tileset::Tile>>(tileset.getFirstGID(), specialTiles));
+
+			// Grab the tiles that have non-empty objectgroups
+			std::vector<tmx::Tileset::Tile> tsTiles;
+			for (auto& t : tileset.getTiles())
+			{
+				if (!t.objectGroup.getObjects().empty())
+				{
+					tsTiles.emplace_back(t);
+				}
+			}
+			tilesetSpecialTilesCollection.insert(std::pair<uint32_t, const std::vector<tmx::Tileset::Tile>>(tileset.getFirstGID(), tsTiles));
 		}
 
 		//get layers
@@ -50,6 +57,7 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 				//skip none-tile layers (for now)
 				continue;
 			}
+
 			auto* tileLayer = dynamic_cast<const tmx::TileLayer*>(layer.get());
 			auto& tiles = tileLayer->getTiles();
 			for (int y = 0; y < rows; y++)
@@ -82,6 +90,19 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 					// Normalize the GID.
 					currentGid -= tilesetGid;
 
+					// Get the objects from the current tile on the current tileset.
+					std::vector<tmx::Tileset::Tile> specialTiles = tilesetSpecialTilesCollection[tilesetGid];
+					tmx::ObjectGroup currentTileObjectGroup;
+					std::vector<tmx::Object> currentTileObjects;
+					for (auto& t : specialTiles)
+					{
+						if (t.ID = currentGid)
+						{
+							currentTileObjectGroup = t.objectGroup;
+						}
+					}
+					currentTileObjects = currentTileObjectGroup.getObjects();
+
 					// Find the dimensions of the tile sheet.
 					int tileSheetWidth = 0;
 					int tileSheetHeight = 0;
@@ -95,8 +116,37 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 					int posX = x * tileWidth * scaleFactor;
 					int posY = y * tileHeight * scaleFactor;
 
-					Game::AddTile(srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid],tileWidth, scaleFactor);
-					// TODO: bring more meta-data into Game so we can do more with the tiles than just draw them.
+
+
+					// Process TileObjects
+					std::vector<SDL_Rect> AABBColliders;
+					for (auto& o : currentTileObjects)
+					{
+						// Object should be of class TileCollision in Tiled to be recognized as a tile collision object,
+						// we can expand this to a switch statement when/if needed.
+						if (o.getClass() == "TileCollision")
+						{
+							if (o.getShape() == tmx::Object::Shape::Ellipse || o.getShape() == tmx::Object::Shape::Rectangle)
+							{
+								//use getAABB() to get the bounding box for the object
+								auto& aabb = o.getAABB();
+								SDL_Rect r{};
+								r.x = (int)aabb.left;
+								r.y = (int)aabb.top;
+								r.w = (int)aabb.width;
+								r.h = (int)aabb.height;
+								AABBColliders.emplace_back(r);
+							}
+							else
+							{
+								//use getPoints() the get a vector of points to draw a more complex shape
+							}
+						}
+						
+					}
+
+					// Draw the Tile
+					Game::AddTile(srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid], tileWidth, scaleFactor, AABBColliders);
 				}
 			}
 		}

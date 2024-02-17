@@ -71,16 +71,23 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     TiledMapManager::loadMap(levelMap, 2);
 
     player.addComponent<TransformComponent>(windowWidth / 2, windowHeight / 2, 32, 32, 2);
-    player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true);
+    player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true, true);
     player.addComponent<ColliderComponent>("player");
     player.addComponent<KeyboardController>();
     player.addGroup(groupPlayers);
 }
 
-void Game::update()
+void Game::update() const
 {
     manager.refresh();
     manager.update();
+
+    for (auto& c : colliderEntities) {
+        if (Collision::AABB(c->GetComponent<ColliderComponent>(), player.GetComponent<ColliderComponent>()))
+        {
+            player.GetComponent<TransformComponent>().velocity.Zero();
+        }
+    }
 
     camera.follow(player.GetComponent<TransformComponent>().position, windowWidth, windowHeight);
 }
@@ -119,4 +126,19 @@ void Game::AddTile(int srcX, int srcY, int x, int y, const char *tilesetPath, in
     auto& tile(manager.addEntity());
     tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetPath, tileSize, scaleFactor);
     tile.addGroup(groupMap);
+}
+
+void Game::AddTile(int srcX, int srcY, int x, int y, const char* tilesetPath, int tileSize, int scaleFactor, std::vector<SDL_Rect> colliders)
+{
+    Game::AddTile(srcX, srcY, x, y, tilesetPath, tileSize, scaleFactor);
+    for (SDL_Rect collider : colliders)
+    {
+        auto& box(manager.addEntity());
+        int boxX = x + collider.x;
+        int boxY = y + collider.y;
+        box.addComponent<TransformComponent>(boxX, boxY, collider.w, collider.y, scaleFactor);
+        box.addComponent<SpriteComponent>("assets/placeholder.png", false);
+        box.addComponent<ColliderComponent>("TileCollision");
+        box.addGroup(groupColliders);
+    }
 }

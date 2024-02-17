@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <map>
+#include <vector>
 #include <tmxlite/Map.hpp>
 #include <tmxlite/Layer.hpp>
 #include <tmxlite/TileLayer.hpp>

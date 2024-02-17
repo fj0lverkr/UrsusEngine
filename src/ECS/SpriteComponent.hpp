@@ -15,6 +15,7 @@ private:
     SDL_Rect srcRect, destRect;
 
     bool animated = false;
+    bool isPlayer = false;
     int frames = 0;
     int animationSpeed = 100;
 
@@ -24,15 +25,18 @@ public:
     SDL_RendererFlip spriteFlip = SDL_FLIP_NONE;
 
     SpriteComponent() = default;
-    SpriteComponent(const char *path)
+    SpriteComponent(const char *path, bool isPlayer)
     {
         swapTexture(path);
+        this->isPlayer = isPlayer;
     }
 
-    SpriteComponent(const char *path, bool isAnimated)
+    SpriteComponent(const char *path, bool isAnimated,bool isPlayer)
     {
+        this->isPlayer = isPlayer;
         animated = isAnimated;
 
+        // TODO this is now very specific for our player, we should rework this...
         Animation idle = Animation(0, 9, 100);
         Animation walk_side = Animation(1, 7, 100);
         Animation walk_front = Animation(2, 7, 100);

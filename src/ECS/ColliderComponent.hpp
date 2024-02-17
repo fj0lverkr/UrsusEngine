@@ -16,7 +16,7 @@ public:
     std::string tag;
     std::string uuid;
 
-    TransformComponent *transform;
+    TransformComponent *transform = new TransformComponent();
 
     ColliderComponent(std::string t)
     {
@@ -39,8 +39,8 @@ public:
 
     void update() override
     {
-        collider.x = static_cast<int>(transform->position.x);
-        collider.y = static_cast<int>(transform->position.y);
+        collider.x = static_cast<int>(transform->position.x) - Game::camera.GetViewFinder().x;
+        collider.y = static_cast<int>(transform->position.y) - Game::camera.GetViewFinder().y;
         collider.w = transform->width * transform->scale;
         collider.h = transform->height * transform->scale;
     }

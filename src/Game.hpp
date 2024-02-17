@@ -20,11 +20,12 @@ public:
     ~Game();
 
     void init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen, SDL_Color rendererColor);
-    void update();
+    void update() const;
     void render();
     void clean();
 
     static void AddTile(int srcX, int srcY, int x, int y, const char* tilesetPath, int tileSize, int scaleFactor);
+    static void AddTile(int srcX, int srcY, int x, int y, const char* tilesetPath, int tileSize, int scaleFactor, std::vector<SDL_Rect> colliders);
     static SDL_Renderer *renderer;
     static SDL_Event event;
     static std::vector<ColliderComponent *> colliders;
