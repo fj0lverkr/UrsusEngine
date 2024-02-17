@@ -8,6 +8,12 @@
    </object>
   </objectgroup>
  </tile>
+ <tile id="39">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="TileCollision" x="0" y="0" width="32" height="2"/>
+   <object id="2" type="TileCollision" x="30" y="3" width="2" height="29"/>
+  </objectgroup>
+ </tile>
  <tile id="49">
   <objectgroup draworder="index" id="2">
    <object id="1" type="TileCollision" x="29" y="0" width="3" height="32"/>
