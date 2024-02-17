@@ -31,7 +31,7 @@ public:
         destRect.x = posX;
         destRect.y = posY;
         destRect.w = destRect.h = tileSize * scale;
-        position.x = posX;
+        position.x = static_cast<float>(posX);
         position.y = posY;
     }
 
