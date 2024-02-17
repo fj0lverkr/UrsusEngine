@@ -1,5 +1,4 @@
 #include "Game.hpp"
-#include "TiledMap.hpp"
 #include "TiledMapManager.hpp"
 #include "Collision.hpp"
 #include "ECS/Components.hpp"
@@ -13,11 +12,9 @@ bool Game::isRunning = false;
 Camera2D Game::camera;
 
 Manager manager;
-TiledMapManager mapManager;
 
 auto &player(manager.addEntity());
 
-const char *mapTileset = "assets/map/tiles.png";
 const std::string levelMap = "assets/tiled/testmap.tmx";
 
 // Labels for grouping Entities, we can have up to 32 Groups per Entity
@@ -71,8 +68,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
 
-    //TiledMap::LoadMap("assets/map/testmap.map", 30, 20, 32, 2);
-    mapManager.loadMap(levelMap, 2);
+    TiledMapManager::loadMap(levelMap, 2);
 
     player.addComponent<TransformComponent>(windowWidth / 2, windowHeight / 2, 32, 32, 2);
     player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true);
@@ -116,13 +112,6 @@ void Game::clean()
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
-}
-
-void Game::AddTile(int srcX, int srcY, int x, int y)
-{
-    auto &tile(manager.addEntity());
-    tile.addComponent<TileComponent>(srcX, srcY, x, y, mapTileset, 32, 2);
-    tile.addGroup(groupMap);
 }
 
 void Game::AddTile(int srcX, int srcY, int x, int y, const char *tilesetPath, int tileSize, int scaleFactor)

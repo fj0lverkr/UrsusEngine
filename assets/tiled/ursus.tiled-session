@@ -1,5 +1,5 @@
 {
-    "activeFile": "testmap.tmx",
+    "activeFile": "map_tiles_sheet.tsx",
     "expandedProjectPaths": [
         "."
     ],
@@ -12,8 +12,8 @@
             "scale": 0.9737499999999999,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 480.6161745827985,
-                "y": 466.23876765083446
+                "x": 479.58921694480114,
+                "y": 465.211810012837
             }
         }
     },
@@ -24,7 +24,7 @@
     ],
     "project": "ursus.tiled-project",
     "recentFiles": [
-        "map_tiles_sheet.tsx",
-        "testmap.tmx"
+        "testmap.tmx",
+        "map_tiles_sheet.tsx"
     ]
 }

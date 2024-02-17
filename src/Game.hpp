@@ -24,7 +24,6 @@ public:
     void render();
     void clean();
 
-    static void AddTile(int srcX, int srcY, int x, int y);
     static void AddTile(int srcX, int srcY, int x, int y, const char* tilesetPath, int tileSize, int scaleFactor);
     static SDL_Renderer *renderer;
     static SDL_Event event;
