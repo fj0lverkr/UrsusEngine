@@ -38,7 +38,7 @@ using GroupBitset = std::bitset<maxGroups>;
 class Component
 {
 public:
-  Entity *entity;
+    Entity* entity = {};
 
   virtual void init(){};
   virtual void update(){};
@@ -53,7 +53,7 @@ private:
   Manager &manager;
   bool active = true;
   std::vector<std::unique_ptr<Component>> components;
-  ComponentArray componentArray;
+  ComponentArray componentArray = {};
   ComponentBitset componentBitset;
   GroupBitset groupBitset;
 

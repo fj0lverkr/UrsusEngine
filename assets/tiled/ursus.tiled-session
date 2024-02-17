@@ -1,0 +1,30 @@
+{
+    "activeFile": "map_tiles_sheet.tsx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "map_tiles_sheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "testmap.tmx": {
+            "scale": 0.9737499999999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 478.5622593068037,
+                "y": 316.3029525032093
+            }
+        }
+    },
+    "last.imagePath": "C:/Users/nilsn/Projects/CPlusPlusBasicEngine/assets/tiled",
+    "openFiles": [
+        "testmap.tmx",
+        "map_tiles_sheet.tsx"
+    ],
+    "project": "ursus.tiled-project",
+    "recentFiles": [
+        "testmap.tmx",
+        "map_tiles_sheet.tsx"
+    ]
+}

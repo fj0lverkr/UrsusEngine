@@ -4,27 +4,27 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "Camera2D.h"
+#include "Camera2D.hpp"
 
 class ColliderComponent;
 
 class Game
 {
 private:
-    SDL_Window *window;
+    static bool isDebug;
+    SDL_Window* window;
     int cnt = 0;
     int windowWidth, windowHeight;
 
 public:
-    Game(/* args */);
+    Game();
     ~Game();
 
-    void init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen, SDL_Color rendererColor);
-    void update();
+    void init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen, SDL_Color rendererColor, bool debug);
+    void update() const;
     void render();
     void clean();
 
-    static void AddTile(int srcX, int srcY, int x, int y);
     static SDL_Renderer *renderer;
     static SDL_Event event;
     static std::vector<ColliderComponent *> colliders;

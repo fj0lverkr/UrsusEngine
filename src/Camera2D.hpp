@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include "Vector2D.h"
+#include "Vector2D.hpp"
 
 class Camera2D
 {

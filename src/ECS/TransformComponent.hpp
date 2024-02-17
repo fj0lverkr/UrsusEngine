@@ -1,6 +1,6 @@
 #pragma once
-#include "Components.h"
-#include "Vector2D.h"
+#include "Components.hpp"
+#include "Vector2D.hpp"
 
 struct TransformComponent : public Component
 {

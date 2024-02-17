@@ -1,7 +1,7 @@
 #pragma once
-#include "ECS.h"
-#include "TransformComponent.h"
-#include "SpriteComponent.h"
+#include "ECS.hpp"
+#include "TransformComponent.hpp"
+#include "SpriteComponent.hpp"
 #include <SDL2/SDL.h>
 
 class TileComponent : public Component
@@ -31,14 +31,14 @@ public:
         destRect.x = posX;
         destRect.y = posY;
         destRect.w = destRect.h = tileSize * scale;
-        position.x = posX;
-        position.y = posY;
+        position.x = static_cast<float>(posX);
+        position.y = static_cast<float>(posY);
     }
 
     void update() override
     {
-        destRect.x = position.x - Game::camera.GetViewFinder().x;
-        destRect.y = position.y - Game::camera.GetViewFinder().y;
+        destRect.x = static_cast<int>(position.x) - Game::camera.GetViewFinder().x;
+        destRect.y = static_cast<int>(position.y) - Game::camera.GetViewFinder().y;
     }
 
     void draw() override
