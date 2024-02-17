@@ -4,6 +4,9 @@ Game *game = nullptr;
 
 int main(int argc, char *argv[])
 {
+    // Debug
+    const bool DEBUG = true;
+
     // Framerate settings
     const int TARGETFPS = 60;
     const int FRAMEDELAY = 1000 / TARGETFPS;
@@ -18,7 +21,7 @@ int main(int argc, char *argv[])
     int frameTime;
 
     game = new Game();
-    game->init(WINDOWTITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOWW, WINDOWH, false, WINDOWBG);
+    game->init(WINDOWTITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOWW, WINDOWH, false, WINDOWBG, DEBUG);
     while (game->isRunning)
     {
         frameStart = SDL_GetTicks64();

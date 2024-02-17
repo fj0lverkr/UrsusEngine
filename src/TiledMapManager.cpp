@@ -1,16 +1,22 @@
 #include "TiledMapManager.hpp"
 #include "Game.hpp"
 #include "TextureManager.hpp"
+#include "ECS/ECS.hpp"
+#include "ECS/Components.hpp"
 
-TiledMapManager::TiledMapManager()
+extern Manager manager;
+
+TiledMapManager::TiledMapManager(size_t tileGroup, size_t colliderGroup)
 {
+	tilesGroup = tileGroup;
+	collidersGroup = colliderGroup;
 }
 
 TiledMapManager::~TiledMapManager()
 {
 }
 
-void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
+void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 {
 	scaleFactor = scaleFactor < 1 ? 1 : scaleFactor;
 	tmx::Map map;
@@ -96,7 +102,7 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 					std::vector<tmx::Object> currentTileObjects;
 					for (auto& t : specialTiles)
 					{
-						if (t.ID = currentGid)
+						if (t.ID == currentGid)
 						{
 							currentTileObjectGroup = t.objectGroup;
 						}
@@ -135,7 +141,7 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 								r.y = (int)aabb.top;
 								r.w = (int)aabb.width;
 								r.h = (int)aabb.height;
-								AABBColliders.emplace_back(r);
+								AABBColliders.push_back(r);
 							}
 							else
 							{
@@ -146,7 +152,7 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 					}
 
 					// Draw the Tile
-					Game::AddTile(srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid], tileWidth, scaleFactor, AABBColliders);
+					AddTile(srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid], tileWidth, scaleFactor, AABBColliders, debug);
 				}
 			}
 		}
@@ -154,5 +160,26 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor)
 	else
 	{
 		//throw error?
+	}
+}
+
+void TiledMapManager::AddTile(int srcX, int srcY, int x, int y, const char* tilesetPath, int tileSize, int scaleFactor, const std::vector<SDL_Rect> &colliders, bool debug) const
+{
+	auto& tile(manager.addEntity());
+	tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetPath, tileSize, scaleFactor);
+	tile.addGroup(tilesGroup);
+	for (SDL_Rect collider : colliders)
+	{
+		auto& box(manager.addEntity());
+		int boxX = x + collider.x * scaleFactor;
+		int boxY = y + collider.y * scaleFactor;
+		box.addComponent<TransformComponent>(boxX, boxY, collider.w, collider.h, scaleFactor);
+		if (debug)
+		{
+			box.addComponent<SpriteComponent>("assets/placeholder.png", false);
+		}
+
+		box.addComponent<ColliderComponent>("TileCollision");
+		box.addGroup(collidersGroup);
 	}
 }

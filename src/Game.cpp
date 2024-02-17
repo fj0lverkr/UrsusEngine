@@ -9,6 +9,7 @@ SDL_Renderer *Game::renderer = nullptr;
 std::vector<ColliderComponent *> Game::colliders;
 
 bool Game::isRunning = false;
+bool Game::isDebug = false;
 Camera2D Game::camera;
 
 Manager manager;
@@ -26,6 +27,8 @@ enum groupLabels : std::size_t
     groupColliders
 };
 
+TiledMapManager mapManager(groupMap, groupColliders);
+
 auto &mapTiles(manager.getGroup(groupMap));
 auto &players(manager.getGroup(groupPlayers));
 auto &colliderEntities(manager.getGroup(groupColliders));
@@ -39,8 +42,10 @@ Game::~Game()
 {
 }
 
-void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen, SDL_Color rendererColor)
+void Game::init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen, SDL_Color rendererColor, bool debug)
 {
+    isDebug = debug;
+
     int flags = 0;
     if (fullscreen)
     {
@@ -67,8 +72,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     {
         isRunning = false;
     }
-
-    TiledMapManager::loadMap(levelMap, 2);
+    mapManager.loadMap(levelMap, 2, true);
 
     player.addComponent<TransformComponent>(windowWidth / 2, windowHeight / 2, 32, 32, 2);
     player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true, true);
@@ -85,7 +89,7 @@ void Game::update() const
     for (auto& c : colliderEntities) {
         if (Collision::AABB(c->GetComponent<ColliderComponent>(), player.GetComponent<ColliderComponent>()))
         {
-            player.GetComponent<TransformComponent>().velocity.Zero();
+            //player.GetComponent<TransformComponent>().velocity.Zero();
         }
     }
 
@@ -119,26 +123,4 @@ void Game::clean()
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
-}
-
-void Game::AddTile(int srcX, int srcY, int x, int y, const char *tilesetPath, int tileSize, int scaleFactor)
-{
-    auto& tile(manager.addEntity());
-    tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetPath, tileSize, scaleFactor);
-    tile.addGroup(groupMap);
-}
-
-void Game::AddTile(int srcX, int srcY, int x, int y, const char* tilesetPath, int tileSize, int scaleFactor, std::vector<SDL_Rect> colliders)
-{
-    Game::AddTile(srcX, srcY, x, y, tilesetPath, tileSize, scaleFactor);
-    for (SDL_Rect collider : colliders)
-    {
-        auto& box(manager.addEntity());
-        int boxX = x + collider.x;
-        int boxY = y + collider.y;
-        box.addComponent<TransformComponent>(boxX, boxY, collider.w, collider.y, scaleFactor);
-        box.addComponent<SpriteComponent>("assets/placeholder.png", false);
-        box.addComponent<ColliderComponent>("TileCollision");
-        box.addGroup(groupColliders);
-    }
 }
