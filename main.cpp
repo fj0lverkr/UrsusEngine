@@ -8,8 +8,8 @@ int main(int argc, char *argv[])
     const bool DEBUG = true;
 
     // Framerate settings
-    const int TARGETFPS = 60;
-    const int FRAMEDELAY = 1000 / TARGETFPS;
+    const Uint64 TARGETFPS = 60;
+    const Uint64 FRAMEDELAY = 1000 / TARGETFPS;
 
     // Initial window Settings
     const char *WINDOWTITLE = "Ursus Engine";
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     const SDL_Color WINDOWBG = {255, 255, 255, 255};
 
     Uint64 frameStart;
-    int frameTime;
+    Uint64  frameTime;
 
     game = new Game();
     game->init(WINDOWTITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOWW, WINDOWH, false, WINDOWBG, DEBUG);
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 
         if (FRAMEDELAY > frameTime)
         {
-            SDL_Delay(FRAMEDELAY - frameTime);
+            SDL_Delay(static_cast<Uint32>(FRAMEDELAY - frameTime));
         }
     }
     game->clean();

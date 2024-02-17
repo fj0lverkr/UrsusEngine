@@ -12,12 +12,12 @@ class Game
 {
 private:
     static bool isDebug;
-    SDL_Window *window;
+    SDL_Window* window;
     int cnt = 0;
     int windowWidth, windowHeight;
 
 public:
-    Game(/* args */);
+    Game();
     ~Game();
 
     void init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen, SDL_Color rendererColor, bool debug);

@@ -32,13 +32,13 @@ public:
         destRect.y = posY;
         destRect.w = destRect.h = tileSize * scale;
         position.x = static_cast<float>(posX);
-        position.y = posY;
+        position.y = static_cast<float>(posY);
     }
 
     void update() override
     {
-        destRect.x = position.x - Game::camera.GetViewFinder().x;
-        destRect.y = position.y - Game::camera.GetViewFinder().y;
+        destRect.x = static_cast<int>(position.x) - Game::camera.GetViewFinder().x;
+        destRect.y = static_cast<int>(position.y) - Game::camera.GetViewFinder().y;
     }
 
     void draw() override

@@ -36,6 +36,8 @@ auto &enemies(manager.getGroup(groupEnemies));
 
 Game::Game()
 {
+    window = {};
+    windowHeight = windowWidth = 0;
 }
 
 Game::~Game()
@@ -74,7 +76,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     }
     mapManager.loadMap(levelMap, 2, true);
 
-    player.addComponent<TransformComponent>(windowWidth / 2, windowHeight / 2, 32, 32, 2);
+    player.addComponent<TransformComponent>(static_cast<float>(windowWidth) / 2.0f, static_cast<float>(windowHeight) / 2.0f, 32.0f, 32.0f, 2.0f);
     player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true, true);
     player.addComponent<ColliderComponent>("player");
     player.addComponent<KeyboardController>();

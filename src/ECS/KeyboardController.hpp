@@ -4,9 +4,9 @@
 
 struct KeyboardController : public Component
 {
-    TransformComponent *transform;
-    SpriteComponent *sprite;
-    SDL_Event event;
+    TransformComponent* transform = {};
+    SpriteComponent* sprite = {};
+    SDL_Event event = {};
 
     void init() override
     {
