@@ -2,3 +2,7 @@ main.exe
 x64/
 .vs/UrsusEngine/
 .vs/CPlusPlusBasicEngine/
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json
+/UrsusEngine.vcxproj
+/UrsusEngine.vcxproj.filters
