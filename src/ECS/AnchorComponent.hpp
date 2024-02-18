@@ -15,6 +15,8 @@ private:
     boost::uuids::random_generator gen;
     Uint64 type;
     SDL_Texture* texture = {};
+    int customX = 0;
+    int customY = 0;
 
 public:
     const enum AnchorType
@@ -22,12 +24,22 @@ public:
         AnchorTop,
         AnchorCenter,
         AnchorBottom,
+        AnchorCustom,
     };
+
     SDL_Rect collider = {};
     std::string tag;
     std::string uuid;
 
     TransformComponent* transform = {};
+
+    AnchorComponent(std::string t, int x, int y)
+    {
+        tag = t;
+        this->type = AnchorCustom;
+        customX = x;
+        customY = y;
+    }
 
     AnchorComponent(std::string t, Uint64 type)
     {
@@ -51,6 +63,8 @@ public:
         {
             entity->addGroup(Game::groupColliders);
         }
+
+        collider.h = collider.w = ANCHORSIZE;
     }
 
     void update() override
@@ -60,11 +74,16 @@ public:
         case AnchorType::AnchorBottom:
             collider.y = (transform->position.y + transform->height * transform->scale) - ANCHORSIZE - Game::camera.GetViewFinder().y;
             collider.x = transform->position.x + static_cast<float>(transform->width * transform->scale) / 2 - static_cast<float>(ANCHORSIZE) / 2 - Game::camera.GetViewFinder().x;
-            collider.h = collider.w = ANCHORSIZE;
             break;
         case AnchorType::AnchorCenter:
+            collider.y = transform->position.y + static_cast<float>(transform->height * transform->scale) / 2 - static_cast<float>(ANCHORSIZE) / 2 - Game::camera.GetViewFinder().y;
+            collider.x = transform->position.x + static_cast<float>(transform->width * transform->scale) / 2 - static_cast<float>(ANCHORSIZE) / 2 - Game::camera.GetViewFinder().x;
             break;
         case AnchorType::AnchorTop:
+            collider.y = transform->position.y - Game::camera.GetViewFinder().y;
+            collider.x = transform->position.x + static_cast<float>(transform->width * transform->scale) / 2 - static_cast<float>(ANCHORSIZE) / 2 - Game::camera.GetViewFinder().x;
+            break;
+        case AnchorType::AnchorCustom:
             break;
         default:
             break;
