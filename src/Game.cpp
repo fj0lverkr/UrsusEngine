@@ -59,11 +59,12 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     }
     mapManager.loadMap(levelMap, 2, true);
 
+    player.addGroup(groupPlayers);
     player.addComponent<TransformComponent>(static_cast<float>(windowWidth) / 2.0f, static_cast<float>(windowHeight) / 2.0f, 32.0f, 32.0f, 2.0f);
     player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true, true);
-    player.addComponent<ColliderComponent>("player", ColliderComponent::ColliderType::AnchorBottom);
+    player.addComponent<ColliderComponent>("player");
+    player.addComponent<AnchorComponent>("playerAnchor", AnchorComponent::AnchorBottom);
     player.addComponent<KeyboardController>();
-    player.addGroup(groupPlayers);
 }
 
 auto& mapTiles(manager.getGroup(Game::groupMap));
@@ -78,7 +79,7 @@ void Game::update() const
     manager.update();
 
     for (auto& c : colliders) {
-        if (Collision::AABB(c->GetComponent<ColliderComponent>(), player.GetComponent<ColliderComponent>()))
+        if (Collision::AABB(c->GetComponent<ColliderComponent>(), player.GetComponent<AnchorComponent>()))
         {
             player.GetComponent<TransformComponent>().position = playerPos;
         }
