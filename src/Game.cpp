@@ -17,11 +17,6 @@ const std::string levelMap = "assets/tiled/testmap.tmx";
 
 TiledMapManager mapManager;
 
-auto &mapTiles(manager.getGroup(Game::groupMap));
-auto &players(manager.getGroup(Game::groupPlayers));
-auto &colliderEntities(manager.getGroup(Game::groupColliders));
-auto &enemies(manager.getGroup(Game::groupEnemies));
-
 Game::Game()
 {
     window = {};
@@ -66,20 +61,26 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
 
     player.addComponent<TransformComponent>(static_cast<float>(windowWidth) / 2.0f, static_cast<float>(windowHeight) / 2.0f, 32.0f, 32.0f, 2.0f);
     player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true, true);
-    player.addComponent<ColliderComponent>("player");
+    player.addComponent<ColliderComponent>("player", ColliderComponent::ColliderType::AnchorBottom);
     player.addComponent<KeyboardController>();
     player.addGroup(groupPlayers);
 }
 
+auto& mapTiles(manager.getGroup(Game::groupMap));
+auto& players(manager.getGroup(Game::groupPlayers));
+auto& colliders(manager.getGroup(Game::groupColliders));
+auto& enemies(manager.getGroup(Game::groupEnemies));
+
 void Game::update() const
 {
+    Vector2D playerPos = player.GetComponent<TransformComponent>().position;
     manager.refresh();
     manager.update();
 
-    for (auto& c : colliderEntities) {
+    for (auto& c : colliders) {
         if (Collision::AABB(c->GetComponent<ColliderComponent>(), player.GetComponent<ColliderComponent>()))
         {
-            //player.GetComponent<TransformComponent>().velocity.Zero();
+            player.GetComponent<TransformComponent>().position = playerPos;
         }
     }
 
@@ -101,9 +102,12 @@ void Game::render()
     {
         e->draw();
     }
-    for (auto &c : colliderEntities)
+    if (isDebug)
     {
-        c->draw();
+        for (auto& c : colliders)
+        {
+            c->draw();
+        }
     }
     SDL_RenderPresent(renderer);
 }

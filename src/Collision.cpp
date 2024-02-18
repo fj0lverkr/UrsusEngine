@@ -13,7 +13,6 @@ bool Collision::AABB(const ColliderComponent &colA, const ColliderComponent &col
 {
     if (AABB(colA.collider, colB.collider) && colA.uuid != colB.uuid)
     {
-        std::cout << colA.tag << " collided with " << colB.tag << std::endl;
         return true;
     }
     return false;
