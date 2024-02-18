@@ -123,7 +123,7 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 
 
 					// Process TileObjects
-					std::vector<SDL_Rect> AABBColliders;
+					std::vector<TileCollider> AABBColliders;
 					for (auto& o : currentTileObjects)
 					{
 						// Object should be of class TileCollision in Tiled to be recognized as a tile collision object,
@@ -134,12 +134,13 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 							{
 								//use getAABB() to get the bounding box for the object
 								auto& aabb = o.getAABB();
+								auto& tag = o.getName() == "" ? o.getClass() : o.getName();
 								SDL_Rect r{};
 								r.x = (int)aabb.left;
 								r.y = (int)aabb.top;
 								r.w = (int)aabb.width;
 								r.h = (int)aabb.height;
-								AABBColliders.push_back(r);
+								AABBColliders.emplace_back(TileCollider {r, tag});
 							}
 							else
 							{
@@ -161,23 +162,23 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 	}
 }
 
-void TiledMapManager::AddTile(int srcX, int srcY, int x, int y, const char* tilesetPath, int tileSize, int scaleFactor, const std::vector<SDL_Rect> &colliders, bool debug) const
+void TiledMapManager::AddTile(int srcX, int srcY, int x, int y, const char* tilesetPath, int tileSize, int scaleFactor, std::vector<TileCollider> &colliders, bool debug) const
 {
 	auto& tile(manager.addEntity());
 	tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetPath, tileSize, scaleFactor);
 	tile.addGroup(Game::groupMap);
-	for (SDL_Rect collider : colliders)
+	for (auto& collider : colliders)
 	{
 		auto& box(manager.addEntity());
-		int boxX = x + collider.x * scaleFactor;
-		int boxY = y + collider.y * scaleFactor;
-		box.addComponent<TransformComponent>(boxX, boxY, collider.w, collider.h, scaleFactor);
+		int boxX = x + collider.getColliderRect().x * scaleFactor;
+		int boxY = y + collider.getColliderRect().y * scaleFactor;
+		box.addComponent<TransformComponent>(boxX, boxY, collider.getColliderRect().w, collider.getColliderRect().h, scaleFactor);
 		if (debug)
 		{
 			box.addComponent<SpriteComponent>("assets/placeholder.png", false);
 		}
 
-		box.addComponent<ColliderComponent>("TileCollision");
+		box.addComponent<ColliderComponent>(collider.getColliderTag());
 		box.addGroup(Game::groupColliders);
 	}
 }
