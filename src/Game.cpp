@@ -18,21 +18,12 @@ auto &player(manager.addEntity());
 
 const std::string levelMap = "assets/tiled/testmap.tmx";
 
-// Labels for grouping Entities, we can have up to 32 Groups per Entity
-enum groupLabels : std::size_t
-{
-    groupMap,
-    groupPlayers,
-    groupEnemies,
-    groupColliders
-};
+TiledMapManager mapManager;
 
-TiledMapManager mapManager(groupMap, groupColliders);
-
-auto &mapTiles(manager.getGroup(groupMap));
-auto &players(manager.getGroup(groupPlayers));
-auto &colliderEntities(manager.getGroup(groupColliders));
-auto &enemies(manager.getGroup(groupEnemies));
+auto &mapTiles(manager.getGroup(Game::groupMap));
+auto &players(manager.getGroup(Game::groupPlayers));
+auto &colliderEntities(manager.getGroup(Game::groupColliders));
+auto &enemies(manager.getGroup(Game::groupEnemies));
 
 Game::Game()
 {

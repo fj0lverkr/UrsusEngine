@@ -6,10 +6,8 @@
 
 extern Manager manager;
 
-TiledMapManager::TiledMapManager(size_t tileGroup, size_t colliderGroup)
+TiledMapManager::TiledMapManager()
 {
-	tilesGroup = tileGroup;
-	collidersGroup = colliderGroup;
 }
 
 TiledMapManager::~TiledMapManager()
@@ -167,7 +165,7 @@ void TiledMapManager::AddTile(int srcX, int srcY, int x, int y, const char* tile
 {
 	auto& tile(manager.addEntity());
 	tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetPath, tileSize, scaleFactor);
-	tile.addGroup(tilesGroup);
+	tile.addGroup(Game::groupMap);
 	for (SDL_Rect collider : colliders)
 	{
 		auto& box(manager.addEntity());
@@ -180,6 +178,6 @@ void TiledMapManager::AddTile(int srcX, int srcY, int x, int y, const char* tile
 		}
 
 		box.addComponent<ColliderComponent>("TileCollision");
-		box.addGroup(collidersGroup);
+		box.addGroup(Game::groupColliders);
 	}
 }
