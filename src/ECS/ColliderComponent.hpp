@@ -34,7 +34,10 @@ public:
         boost::uuids::uuid id = gen();
         this->uuid = boost::uuids::to_string(id);
 
-        Game::colliders.push_back(this);
+        if (!entity->hasGroup(Game::groupColliders))
+        {
+            entity->addGroup(Game::groupColliders);
+        }
     }
 
     void update() override

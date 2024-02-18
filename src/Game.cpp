@@ -2,11 +2,8 @@
 #include "TiledMapManager.hpp"
 #include "Collision.hpp"
 #include "ECS/Components.hpp"
-#include <string>
 
 SDL_Renderer *Game::renderer = nullptr;
-
-std::vector<ColliderComponent *> Game::colliders;
 
 bool Game::isRunning = false;
 bool Game::isDebug = false;
