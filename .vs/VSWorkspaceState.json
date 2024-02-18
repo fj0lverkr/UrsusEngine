@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Local settings (.vs)",
+    "\\src"
   ],
-  "SelectedNode": "\\UrsusEngine.sln",
+  "SelectedNode": "\\Local settings (.vs)\\CPlusPlusBasicEngine",
   "PreviewInSolutionExplorer": false
 }
