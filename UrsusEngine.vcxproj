@@ -130,6 +130,7 @@
     <ClCompile Include="src\ecs\ECS.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
+    <ClCompile Include="src\TileCollider.cpp" />
     <ClCompile Include="src\TiledMapManager.cpp" />
     <ClCompile Include="src\Vector2D.cpp" />
   </ItemGroup>
@@ -146,6 +147,7 @@
     <ClInclude Include="src\ecs\TransformComponent.hpp" />
     <ClInclude Include="src\Game.hpp" />
     <ClInclude Include="src\TextureManager.hpp" />
+    <ClInclude Include="src\TileCollider.hpp" />
     <ClInclude Include="src\TiledMapManager.hpp" />
     <ClInclude Include="src\Vector2D.hpp" />
   </ItemGroup>
