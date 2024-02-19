@@ -4,6 +4,5 @@ x64/
 .vs/CPlusPlusBasicEngine/
 /.vs/slnx.sqlite
 /.vs/VSWorkspaceState.json
-/UrsusEngine.vcxproj
-/UrsusEngine.vcxproj.filters
 /.vs/slnx.sqlite-journal
+/.vs/ProjectSettings.json
