@@ -8,15 +8,46 @@
    </object>
   </objectgroup>
  </tile>
+ <tile id="35">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="TileCollision" x="0" y="0" width="32" height="2"/>
+   <object id="2" type="TileCollision" x="0" y="2" width="2" height="30"/>
+  </objectgroup>
+ </tile>
+ <tile id="36">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="TileCollision" x="0" y="0" width="32" height="2"/>
+  </objectgroup>
+ </tile>
+ <tile id="37">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="TileCollision" x="0" y="0" width="32" height="2"/>
+  </objectgroup>
+ </tile>
+ <tile id="38">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="TileCollision" x="0" y="0" width="32" height="2"/>
+  </objectgroup>
+ </tile>
  <tile id="39">
   <objectgroup draworder="index" id="2">
    <object id="1" type="TileCollision" x="0" y="0" width="32" height="2"/>
-   <object id="2" type="TileCollision" x="30" y="3" width="2" height="29"/>
+   <object id="2" type="TileCollision" x="30" y="2" width="2" height="30"/>
+  </objectgroup>
+ </tile>
+ <tile id="44">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="TileCollision" x="0" y="0" width="2" height="32"/>
+  </objectgroup>
+ </tile>
+ <tile id="45">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="TileCollision" x="0" y="0" width="2" height="32"/>
   </objectgroup>
  </tile>
  <tile id="49">
   <objectgroup draworder="index" id="2">
-   <object id="1" type="TileCollision" x="29" y="0" width="3" height="32"/>
+   <object id="1" type="TileCollision" x="30" y="0" width="2" height="32"/>
   </objectgroup>
  </tile>
 </tileset>
