@@ -2,12 +2,40 @@
 #include "../Game.hpp"
 #include "Components.hpp"
 
-struct KeyboardController : public Component
+class KeyboardController : public Component
 {
+private: 
     TransformComponent* transform = {};
     SpriteComponent* sprite = {};
     SDL_Event event = {};
 
+    void resetVelocity(bool isHorizontal)
+    {
+        if (isHorizontal)
+        {
+            if (transform->velocity.x > 0)
+            {
+                transform->velocity.x = 1;
+            }
+            else if (transform->velocity.x < 0)
+            {
+                transform->velocity.x = -1;
+            }
+        }
+        else
+        {
+            if (transform->velocity.y > 0)
+            {
+                transform->velocity.y = 1;
+            }
+            else if (transform->velocity.y < 0)
+            {
+                transform->velocity.y = -1;
+            }
+        }
+    }
+
+public:
     void init() override
     {
         transform = &entity->GetComponent<TransformComponent>();
@@ -50,24 +78,28 @@ struct KeyboardController : public Component
                         {
                             transform->velocity.y = 0;
                         }
-                        break;
-                    case SDLK_a:
-                        if (transform->velocity.x < 0)
-                        {
-                            transform->velocity.x = 0;
-                        }
+                        resetVelocity(true);
                         break;
                     case SDLK_s:
                         if (transform->velocity.y > 0)
                         {
                             transform->velocity.y = 0;
                         }
+                        resetVelocity(true);
+                        break;
+                    case SDLK_a:
+                        if (transform->velocity.x < 0)
+                        {
+                            transform->velocity.x = 0;
+                        }
+                        resetVelocity(false);
                         break;
                     case SDLK_d:
                         if (transform->velocity.x > 0)
                         {
                             transform->velocity.x = 0;
                         }
+                        resetVelocity(false);
                         break;
                     case SDLK_ESCAPE:
                         Game::isRunning = false;
@@ -99,8 +131,11 @@ struct KeyboardController : public Component
                 {
                     sprite->Play("WalkSide");
                     sprite->spriteFlip = transform->velocity.x > 0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+                    if (transform->velocity.y != 0)
+                    {
+                        transform->velocity.Normalize();
+                    }
                 }
-                transform->velocity.Normalize();
             }
         }
     }

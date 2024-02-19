@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="src\Camera2D.hpp" />
     <ClInclude Include="src\Collision.hpp" />
+    <ClInclude Include="src\ECS\AnchorComponent.hpp" />
     <ClInclude Include="src\ecs\Animation.hpp" />
     <ClInclude Include="src\ecs\ColliderComponent.hpp" />
     <ClInclude Include="src\ecs\Components.hpp" />
