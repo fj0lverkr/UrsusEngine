@@ -90,7 +90,7 @@
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>C:\Users\nils\Documents\Projects\CPP\UrsusEngine\src;C:\src\tmxlite\include;C:\src\SDL2\include;C:\src\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\nilsn\source\repos\fj0lverkr\UrsusEngine\src;C:\Users\nils\Documents\Projects\CPP\UrsusEngine\src;C:\src\tmxlite\include;C:\src\SDL2\include;C:\src\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
