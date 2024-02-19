@@ -72,21 +72,21 @@ public:
         switch (this->type)
         {
         case AnchorType::AnchorBottom:
-            collider.y = (transform->position.y + transform->height * transform->scale) - ANCHORSIZE - Game::camera.GetViewFinder().y;
-            collider.x = transform->position.x + static_cast<float>(transform->width * transform->scale) / 2 - static_cast<float>(ANCHORSIZE) / 2 - Game::camera.GetViewFinder().x;
+            collider.y = (static_cast<int>(transform->position.y) + transform->height * transform->scale) - ANCHORSIZE - Game::camera.GetViewFinder().y;
+            collider.x = static_cast<int>(transform->position.x) + static_cast<float>(transform->width * transform->scale) / 2.0f - static_cast<float>(ANCHORSIZE) / 2.0f - Game::camera.GetViewFinder().x;
             break;
         case AnchorType::AnchorCenter:
-            collider.y = transform->position.y + static_cast<float>(transform->height * transform->scale) / 2 - static_cast<float>(ANCHORSIZE) / 2 - Game::camera.GetViewFinder().y;
-            collider.x = transform->position.x + static_cast<float>(transform->width * transform->scale) / 2 - static_cast<float>(ANCHORSIZE) / 2 - Game::camera.GetViewFinder().x;
+            collider.y = static_cast<int>(transform->position.y) + static_cast<float>(transform->height * transform->scale) / 2.0f - static_cast<float>(ANCHORSIZE) / 2.0f - Game::camera.GetViewFinder().y;
+            collider.x = static_cast<int>(transform->position.x) + static_cast<float>(transform->width * transform->scale) / 2.0f - static_cast<float>(ANCHORSIZE) / 2.0f - Game::camera.GetViewFinder().x;
             break;
         case AnchorType::AnchorTop:
-            collider.y = transform->position.y - Game::camera.GetViewFinder().y;
-            collider.x = transform->position.x + static_cast<float>(transform->width * transform->scale) / 2 - static_cast<float>(ANCHORSIZE) / 2 - Game::camera.GetViewFinder().x;
+            collider.y = static_cast<int>(transform->position.y) - Game::camera.GetViewFinder().y;
+            collider.x = static_cast<int>(transform->position.x) + static_cast<float>(transform->width * transform->scale) / 2.0f - static_cast<float>(ANCHORSIZE) / 2.0f - Game::camera.GetViewFinder().x;
             break;
         case AnchorType::AnchorCustom:
             // This places the center of the anchor at the custom position, relative to the scale of the entity transform.
-            collider.y = (transform->position.y + customY *transform->scale) - static_cast<float>(ANCHORSIZE) / 2 - Game::camera.GetViewFinder().y;
-            collider.x = (transform->position.x + customX * transform->scale) - static_cast<float>(ANCHORSIZE) / 2 - Game::camera.GetViewFinder().x;
+            collider.y = (static_cast<int>(transform->position.y) + customY * transform->scale) - static_cast<float>(ANCHORSIZE) / 2.0f - Game::camera.GetViewFinder().y;
+            collider.x = (static_cast<int>(transform->position.x) + customX * transform->scale) - static_cast<float>(ANCHORSIZE) / 2.0f - Game::camera.GetViewFinder().x;
             break;
         default:
             break;
