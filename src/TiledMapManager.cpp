@@ -145,6 +145,7 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 							else
 							{
 								//use getPoints() the get a vector of points to draw a more complex shape
+								//this means we need to add a different type of ColliderComponent as the regular one takes an SDL_Rect for the shape.
 							}
 						}
 						
@@ -177,8 +178,6 @@ void TiledMapManager::AddTile(int srcX, int srcY, int x, int y, const char* tile
 		{
 			box.addComponent<SpriteComponent>("assets/placeholder.png", false);
 		}
-
 		box.addComponent<ColliderComponent>(collider.getColliderTag());
-		box.addGroup(Game::groupColliders);
 	}
 }
