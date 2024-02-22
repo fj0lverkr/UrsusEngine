@@ -144,14 +144,23 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 							}
 							else
 							{
+								std::vector<SDL_Point> tileColliderPoints = {};
 								//use getPoints() the get a vector of points to draw a more complex shape
 								//this means we need to add a different type of ColliderComponent as the regular one takes an SDL_Rect for the shape.
+								for (auto& p : o.getPoints())
+								{
+									SDL_Point point = { static_cast<int>(p.x), static_cast<int>(p.y) };
+									tileColliderPoints.emplace_back(point);
+						
+									//Using SDL_RenderDrawLines() we can visualise these points
+								}
 							}
 						}
 						
 					}
 
 					// Draw the Tile
+					// Note that we currently only take the vector of AABB type colliders (even though they are TileCollider objects), this should accommodate the polygon style colliders as well
 					AddTile(srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid], tileWidth, scaleFactor, AABBColliders, debug);
 				}
 			}
