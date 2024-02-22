@@ -123,24 +123,24 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 
 
 					// Process TileObjects
-					std::vector<TileCollider> AABBColliders;
+					std::vector<TileCollider> tileColliders;
 					for (auto& o : currentTileObjects)
 					{
 						// Object should be of class TileCollision in Tiled to be recognized as a tile collision object,
 						// we can expand this to a switch statement when/if needed.
 						if (o.getClass() == "TileCollision")
 						{
+							auto& tag = o.getName() == "" ? o.getClass() : o.getName();
 							if (o.getShape() == tmx::Object::Shape::Ellipse || o.getShape() == tmx::Object::Shape::Rectangle)
 							{
 								//use getAABB() to get the bounding box for the object
 								auto& aabb = o.getAABB();
-								auto& tag = o.getName() == "" ? o.getClass() : o.getName();
 								SDL_Rect r{};
 								r.x = (int)aabb.left;
 								r.y = (int)aabb.top;
 								r.w = (int)aabb.width;
 								r.h = (int)aabb.height;
-								AABBColliders.emplace_back(TileCollider {r, tag});
+								tileColliders.emplace_back(TileCollider {r, tag});
 							}
 							else
 							{
@@ -151,8 +151,7 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 								{
 									SDL_Point point = { static_cast<int>(p.x), static_cast<int>(p.y) };
 									tileColliderPoints.emplace_back(point);
-						
-									//Using SDL_RenderDrawLines() we can visualise these points
+									tileColliders.emplace_back(TileCollider{ o.getPosition().x, o.getPosition().y, tileColliderPoints, tag });
 								}
 							}
 						}
@@ -161,7 +160,7 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 
 					// Draw the Tile
 					// Note that we currently only take the vector of AABB type colliders (even though they are TileCollider objects), this should accommodate the polygon style colliders as well
-					AddTile(srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid], tileWidth, scaleFactor, AABBColliders, debug);
+					AddTile(srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid], tileWidth, scaleFactor, tileColliders, debug);
 				}
 			}
 		}
@@ -177,16 +176,32 @@ void TiledMapManager::AddTile(int srcX, int srcY, int x, int y, const char* tile
 	auto& tile(manager.addEntity());
 	tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetPath, tileSize, scaleFactor);
 	tile.addGroup(Game::groupMap);
-	for (auto& collider : colliders)
+	for (auto& c : colliders)
 	{
 		auto& box(manager.addEntity());
-		int boxX = x + collider.getColliderRect().x * scaleFactor;
-		int boxY = y + collider.getColliderRect().y * scaleFactor;
-		box.addComponent<TransformComponent>(boxX, boxY, collider.getColliderRect().w, collider.getColliderRect().h, scaleFactor);
-		if (debug)
+		if (c.getColliderType() == Rectangle)
 		{
-			box.addComponent<SpriteComponent>("assets/placeholder.png", false);
+			int boxX = x + c.getColliderRect().x * scaleFactor;
+			int boxY = y + c.getColliderRect().y * scaleFactor;
+			box.addComponent<TransformComponent>(boxX, boxY, c.getColliderRect().w, c.getColliderRect().h, scaleFactor);
+
+			if (debug)
+			{
+				box.addComponent<SpriteComponent>("assets/placeholder.png", false);
+			}
 		}
-		box.addComponent<ColliderComponent>(collider.getColliderTag());
+		else
+		{
+			float posX = x + c.getColliderPosition().x * scaleFactor;
+			float posY = y + c.getColliderPosition().y * scaleFactor;
+			box.addComponent<PolygonTransformComponent>(posX, posY, c.getColliderPoints(), scaleFactor, 0);
+
+			if (debug)
+			{
+				box.addComponent<PolygonSpriteComponent>("assets/placeholder.png", false);
+			}
+		}
+
+		box.addComponent<ColliderComponent>(c.getColliderTag());
 	}
 }
