@@ -63,7 +63,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player.addComponent<TransformComponent>(static_cast<float>(windowWidth) / 2, static_cast<float>(windowHeight) / 2, 32.0f, 32.0f, 2);
     player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true, true);
     player.addComponent<ColliderComponent>("player");
-    player.addComponent<AnchorComponent>("playerAnchor", AnchorComponent::AnchorBottom);
+    player.addComponent<AnchorComponent>("playerAnchor", AnchorComponent::AnchorBottom, 0.0f, 10.0f);
     player.addComponent<KeyboardController>();
 }
 

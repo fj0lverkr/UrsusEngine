@@ -17,6 +17,7 @@ private:
     SDL_Texture* texture = {};
     float customX = 0.0f;
     float customY = 0.0f;
+    float offset;
 
 public:
     const enum AnchorType
@@ -39,12 +40,21 @@ public:
         this->type = AnchorCustom;
         customX = x;
         customY = y;
+        this->offset = 0.0f;
     }
 
     AnchorComponent(std::string t, Uint64 type)
     {
         tag = t;
         this->type = type;
+        this->offset = 0.0f;
+    }
+
+    AnchorComponent(std::string t, Uint64 type, float offsetTop, float offsetBottom)
+    {
+        tag = t;
+        this->type = type;
+        this->offset = offsetTop - offsetBottom;
     }
 
     void init() override
@@ -72,15 +82,15 @@ public:
         switch (this->type)
         {
         case AnchorType::AnchorBottom:
-            collider.y = (transform->position.y + transform->height * transform->scale) - ANCHORSIZE - Game::camera.GetViewFinder().y;
+            collider.y = (transform->position.y + transform->height * transform->scale) - ANCHORSIZE - Game::camera.GetViewFinder().y + offset;
             collider.x = transform->position.x + static_cast<float>(transform->width * transform->scale) / 2 - ANCHORSIZE / 2 - Game::camera.GetViewFinder().x;
             break;
         case AnchorType::AnchorCenter:
-            collider.y = transform->position.y + static_cast<float>(transform->height * transform->scale) / 2 - ANCHORSIZE / 2 - Game::camera.GetViewFinder().y;
+            collider.y = transform->position.y + static_cast<float>(transform->height * transform->scale) / 2 - ANCHORSIZE / 2 - Game::camera.GetViewFinder().y + offset;
             collider.x = transform->position.x + static_cast<float>(transform->width * transform->scale) / 2 - ANCHORSIZE / 2 - Game::camera.GetViewFinder().x;
             break;
         case AnchorType::AnchorTop:
-            collider.y = transform->position.y - Game::camera.GetViewFinder().y;
+            collider.y = transform->position.y - Game::camera.GetViewFinder().y + offset;
             collider.x = transform->position.x + static_cast<float>(transform->width * transform->scale) / 2 - ANCHORSIZE / 2 - Game::camera.GetViewFinder().x;
             break;
         case AnchorType::AnchorCustom:
