@@ -184,6 +184,7 @@ void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, const char* 
 			float boxX = x + c.getColliderRect().x * scaleFactor;
 			float boxY = y + c.getColliderRect().y * scaleFactor;
 			box.addComponent<TransformComponent>(boxX, boxY, c.getColliderRect().w, c.getColliderRect().h, scaleFactor);
+			box.addComponent<ColliderComponent>(c.getColliderTag());
 
 			if (debug)
 			{
@@ -192,6 +193,8 @@ void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, const char* 
 		}
 		else
 		{
+			// TODO in a new branch, we should see if we can draw replace this by drawing a bunch of rectangles for each set of points (a line is just a very thin rectangle?)
+			// then we can handle all the rest just like we would a normal Rectangular collider
 			float posX = x + c.getColliderPosition().x * scaleFactor;
 			float posY = y + c.getColliderPosition().y * scaleFactor;
 			box.addComponent<PolygonTransformComponent>(posX, posY, c.getColliderPoints(), scaleFactor, 0);
@@ -201,7 +204,5 @@ void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, const char* 
 				box.addComponent<PolygonLinesComponent>();
 			}
 		}
-
-		box.addComponent<ColliderComponent>(c.getColliderTag());
 	}
 }
