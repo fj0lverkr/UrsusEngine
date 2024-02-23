@@ -18,7 +18,7 @@ class AnchorComponent;
 class Collision
 {
 public:
-    static bool AABB(const SDL_Rect &rectA, const SDL_Rect &rectB);
+    static bool AABB(const SDL_FRect &rectA, const SDL_FRect &rectB);
     static bool AABB(const ColliderComponent &colA, const ColliderComponent &colB);
     static bool AABB(const ColliderComponent& col, const AnchorComponent& anch);
     static bool AABB(const AnchorComponent& anchA, const AnchorComponent& anchB);

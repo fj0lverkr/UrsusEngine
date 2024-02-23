@@ -10,7 +10,7 @@ struct PolygonTransformComponent : public Component
 	Vector2D velocity;
 
     SDL_FPoint* points;
-    int pointCount;
+    size_t pointCount;
 	int scale;
 	int speed;
 

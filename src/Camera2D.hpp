@@ -6,11 +6,11 @@
 class Camera2D
 {
 private:
-    SDL_Rect viewFinder;
+    SDL_FRect viewFinder;
 
 public:
     Camera2D();
-    Camera2D(int x, int y, int w, int h);
-    SDL_Rect GetViewFinder();
+    Camera2D(float x, float y, int w, int h);
+    SDL_FRect GetViewFinder() const;
     void follow(Vector2D &position, int windowWidth, int windowHeight);
 };

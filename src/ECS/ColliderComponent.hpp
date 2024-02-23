@@ -12,7 +12,7 @@ private:
     boost::uuids::random_generator gen;
 
 public:
-    SDL_Rect collider = {};
+    SDL_FRect collider = {};
     std::string tag;
     std::string uuid;
 
@@ -42,8 +42,8 @@ public:
 
     void update() override
     {
-        collider.x = static_cast<int>(transform->position.x) - Game::camera.GetViewFinder().x;
-        collider.y = static_cast<int>(transform->position.y) - Game::camera.GetViewFinder().y;
+        collider.x = transform->position.x - Game::camera.GetViewFinder().x;
+        collider.y = transform->position.y - Game::camera.GetViewFinder().y;
         collider.w = transform->width * transform->scale;
         collider.h = transform->height * transform->scale;
     }

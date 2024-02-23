@@ -49,6 +49,7 @@ public:
 
     void draw() override
     {
-        SDL_RenderDrawLinesF(Game::renderer, destPoints, transform->pointCount);
+        int count = static_cast<int>(transform->pointCount);
+        SDL_RenderDrawLinesF(Game::renderer, destPoints, count);
     }
 };

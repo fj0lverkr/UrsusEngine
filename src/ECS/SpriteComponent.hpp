@@ -12,7 +12,8 @@ class SpriteComponent : public Component
 private:
     TransformComponent *transform;
     SDL_Texture *texture;
-    SDL_Rect srcRect, destRect;
+    SDL_Rect srcRect;
+    SDL_FRect destRect;
 
     bool animated = false;
     bool isPlayer = false;
@@ -60,8 +61,8 @@ public:
         transform = &entity->GetComponent<TransformComponent>();
 
         srcRect.x = srcRect.y = 0;
-        srcRect.w = transform->width;
-        srcRect.h = transform->height;
+        srcRect.w = static_cast<int>(transform->width);
+        srcRect.h = static_cast<int>(transform->height);
     }
 
     void update() override
@@ -71,10 +72,10 @@ public:
             srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks64() / animationSpeed) % frames);
         }
 
-        srcRect.y = animationIndex * transform->height;
+        srcRect.y = static_cast<int>(animationIndex * transform->height);
 
-        destRect.x = static_cast<int>(transform->position.x) - Game::camera.GetViewFinder().x;
-        destRect.y = static_cast<int>(transform->position.y) - Game::camera.GetViewFinder().y;
+        destRect.x = transform->position.x - Game::camera.GetViewFinder().x;
+        destRect.y = transform->position.y - Game::camera.GetViewFinder().y;
         destRect.w = transform->width * transform->scale;
         destRect.h = transform->height * transform->scale;
     }

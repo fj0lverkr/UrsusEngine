@@ -49,7 +49,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
             {
                 SDL_SetRenderDrawColor(renderer, rendererColor.r, rendererColor.g, rendererColor.b, rendererColor.a);
                 isRunning = true;
-                Game::camera = {0, 0, width, height};
+                Game::camera = {0.0f, 0.0f, width, height};
             }
         }
     }
@@ -60,7 +60,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     mapManager.loadMap(levelMap, 2, true);
 
     player.addGroup(groupPlayers);
-    player.addComponent<TransformComponent>(static_cast<float>(windowWidth) / 2.0f, static_cast<float>(windowHeight) / 2.0f, 32.0f, 32.0f, 2.0f);
+    player.addComponent<TransformComponent>(static_cast<float>(windowWidth) / 2, static_cast<float>(windowHeight) / 2, 32.0f, 32.0f, 2);
     player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true, true);
     player.addComponent<ColliderComponent>("player");
     player.addComponent<AnchorComponent>("playerAnchor", AnchorComponent::AnchorBottom);

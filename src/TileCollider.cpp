@@ -1,19 +1,19 @@
 #include "TileCollider.hpp"
 
-TileCollider::TileCollider(SDL_Rect rect, std::string tag)
+TileCollider::TileCollider(SDL_FRect rect, std::string tag)
 {
-	float fx = static_cast<float>(rect.x);
-	float fy = static_cast<float>(rect.y);
+	float fx = rect.x;
+	float fy = rect.y;
 	position = { fx, fy };
 	colliderRect = rect;
 	colliderTag = tag;
 	colliderType = Rectangle;
 }
 
-TileCollider::TileCollider(int x, int y, int w, int h, std::string tag)
+TileCollider::TileCollider(float x, float y, float w, float h, std::string tag)
 {
-	float fx = static_cast<float>(x);
-	float fy = static_cast<float>(y);
+	float fx = x;
+	float fy = y;
 	position = { fx, fy };
 	colliderRect = { x, y, w, h };
 	colliderTag = tag;
@@ -33,7 +33,7 @@ TileCollider::~TileCollider()
 {
 }
 
-SDL_Rect TileCollider::getColliderRect() const
+SDL_FRect TileCollider::getColliderRect() const
 {
 	return colliderRect;
 }

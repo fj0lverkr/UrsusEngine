@@ -117,8 +117,8 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 					int srcX = (currentGid % (tileSheetWidth / tileWidth)) * tileWidth;
 					int srcY = (currentGid / (tileSheetWidth / tileWidth)) * tileHeight;
 
-					int posX = x * tileWidth * scaleFactor;
-					int posY = y * tileHeight * scaleFactor;
+					float posX = static_cast<float>(x * tileWidth * scaleFactor);
+					float posY = static_cast<float>(y * tileHeight * scaleFactor);
 
 
 
@@ -135,11 +135,11 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 							{
 								//use getAABB() to get the bounding box for the object
 								auto& aabb = o.getAABB();
-								SDL_Rect r{};
-								r.x = (int)aabb.left;
-								r.y = (int)aabb.top;
-								r.w = (int)aabb.width;
-								r.h = (int)aabb.height;
+								SDL_FRect r{};
+								r.x = aabb.left;
+								r.y = aabb.top;
+								r.w = aabb.width;
+								r.h = aabb.height;
 								tileColliders.emplace_back(TileCollider {r, tag});
 							}
 							else
@@ -171,7 +171,7 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 	}
 }
 
-void TiledMapManager::AddTile(int srcX, int srcY, int x, int y, const char* tilesetPath, int tileSize, int scaleFactor, std::vector<TileCollider> &colliders, bool debug) const
+void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, const char* tilesetPath, int tileSize, int scaleFactor, std::vector<TileCollider> &colliders, bool debug) const
 {
 	auto& tile(manager.addEntity());
 	tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetPath, tileSize, scaleFactor);
@@ -181,8 +181,8 @@ void TiledMapManager::AddTile(int srcX, int srcY, int x, int y, const char* tile
 		auto& box(manager.addEntity());
 		if (c.getColliderType() == Rectangle)
 		{
-			int boxX = x + c.getColliderRect().x * scaleFactor;
-			int boxY = y + c.getColliderRect().y * scaleFactor;
+			float boxX = x + c.getColliderRect().x * scaleFactor;
+			float boxY = y + c.getColliderRect().y * scaleFactor;
 			box.addComponent<TransformComponent>(boxX, boxY, c.getColliderRect().w, c.getColliderRect().h, scaleFactor);
 
 			if (debug)

@@ -2,29 +2,32 @@
 
 Camera2D::Camera2D()
 {
+    this->viewFinder = { 0.0f, 0.0f, 1920, 1080 };
 }
 
-Camera2D::Camera2D(int x, int y, int w, int h)
+Camera2D::Camera2D(float x, float y, int w, int h)
 {
-    this->viewFinder = {x, y, w, h};
+    float vfWidth = static_cast<float>(w);
+    float vfHeight = static_cast<float>(h);
+    this->viewFinder = {x, y, vfWidth, vfHeight};
 }
 
-SDL_Rect Camera2D::GetViewFinder()
+SDL_FRect Camera2D::GetViewFinder() const
 {
     return this->viewFinder;
 }
 
 void Camera2D::follow(Vector2D &position, int windowWidth, int windowHeight)
 {
-    this->viewFinder.x = position.x - windowWidth / 2;
-    this->viewFinder.y = position.y - windowHeight / 2;
-    if (this->viewFinder.x < 0)
+    this->viewFinder.x = position.x - static_cast<float>(windowWidth) / 2;
+    this->viewFinder.y = position.y - static_cast<float>(windowHeight) / 2;
+    if (this->viewFinder.x < 0.0f)
     {
-        this->viewFinder.x = 0;
+        this->viewFinder.x = 0.0f;
     }
-    if (this->viewFinder.y < 0)
+    if (this->viewFinder.y < 0.0f)
     {
-        this->viewFinder.y = 0;
+        this->viewFinder.y = 0.0f;
     }
     if (this->viewFinder.x > this->viewFinder.w)
     {

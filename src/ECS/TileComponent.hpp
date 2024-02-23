@@ -11,7 +11,8 @@ private:
 
 public:
     SDL_Texture *texture;
-    SDL_Rect srcRect, destRect;
+    SDL_Rect srcRect;
+    SDL_FRect destRect;
     Vector2D position;
 
     TileComponent() = default;
@@ -21,7 +22,7 @@ public:
         SDL_DestroyTexture(texture);
     }
 
-    TileComponent(int srcX, int srcY, int posX, int posY, const char *path, int tileSize, int scaleFactor)
+    TileComponent(int srcX, int srcY, float posX, float posY, const char *path, int tileSize, int scaleFactor)
     {
         scale = scaleFactor > 1 ? scaleFactor : 1;
         texture = TextureManager::LoadTexture(path);
@@ -30,15 +31,15 @@ public:
         srcRect.w = srcRect.h = tileSize;
         destRect.x = posX;
         destRect.y = posY;
-        destRect.w = destRect.h = tileSize * scale;
-        position.x = static_cast<float>(posX);
-        position.y = static_cast<float>(posY);
+        destRect.w = destRect.h = static_cast<float>(tileSize * scale);
+        position.x = posX;
+        position.y = posY;
     }
 
     void update() override
     {
-        destRect.x = static_cast<int>(position.x) - Game::camera.GetViewFinder().x;
-        destRect.y = static_cast<int>(position.y) - Game::camera.GetViewFinder().y;
+        destRect.x = position.x - Game::camera.GetViewFinder().x;
+        destRect.y = position.y - Game::camera.GetViewFinder().y;
     }
 
     void draw() override

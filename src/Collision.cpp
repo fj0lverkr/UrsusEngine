@@ -2,7 +2,7 @@
 #include "ECS/ColliderComponent.hpp"
 #include "ECS/AnchorComponent.hpp"
 
-bool Collision::AABB(const SDL_Rect &rectA, const SDL_Rect &rectB)
+bool Collision::AABB(const SDL_FRect &rectA, const SDL_FRect &rectB)
 {
     return rectA.x + rectA.w >= rectB.x &&
            rectB.x + rectB.w >= rectA.x &&

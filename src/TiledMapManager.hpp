@@ -11,7 +11,7 @@
 class TiledMapManager
 {
 private:
-	void AddTile(int srcX, int srcY, int x, int y, const char* tilesetPath, int tileSize, int scaleFactor, std::vector<TileCollider> &colliders, bool debug) const;
+	void AddTile(int srcX, int srcY, float x, float y, const char* tilesetPath, int tileSize, int scaleFactor, std::vector<TileCollider> &colliders, bool debug) const;
 
 public:
 	TiledMapManager();
