@@ -143,7 +143,7 @@
     <ClInclude Include="src\ecs\Components.hpp" />
     <ClInclude Include="src\ecs\ECS.hpp" />
     <ClInclude Include="src\ecs\KeyboardController.hpp" />
-    <ClInclude Include="src\ECS\PolygonSpriteComponent.hpp" />
+    <ClInclude Include="src\ECS\PolygonLinesComponent.hpp" />
     <ClInclude Include="src\ECS\PolygonTransformComponent.hpp" />
     <ClInclude Include="src\ecs\SpriteComponent.hpp" />
     <ClInclude Include="src\ecs\TileComponent.hpp" />

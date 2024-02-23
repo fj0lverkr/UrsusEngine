@@ -4,7 +4,7 @@
 #include "TransformComponent.hpp"
 #include "PolygonTransformComponent.hpp"
 #include "SpriteComponent.hpp"
-#include "PolygonSpriteComponent.hpp"
+#include "PolygonLinesComponent.hpp"
 #include "KeyboardController.hpp"
 #include "ColliderComponent.hpp"
 #include "TileComponent.hpp"

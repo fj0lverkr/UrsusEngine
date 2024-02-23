@@ -95,7 +95,7 @@
     <ClInclude Include="src\ECS\PolygonTransformComponent.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\PolygonSpriteComponent.hpp">
+    <ClInclude Include="src\ECS\PolygonLinesComponent.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

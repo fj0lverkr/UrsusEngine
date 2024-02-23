@@ -20,7 +20,7 @@ TileCollider::TileCollider(int x, int y, int w, int h, std::string tag)
 	colliderType = Rectangle;
 }
 
-TileCollider::TileCollider(float x, float y, std::vector<SDL_Point> points, std::string tag)
+TileCollider::TileCollider(float x, float y, std::vector<SDL_FPoint> points, std::string tag)
 {
 	position = { x, y };
 	colliderRect = { 0, 0, 0, 0 };
@@ -43,7 +43,7 @@ std::string TileCollider::getColliderTag()
 	return colliderTag;
 }
 
-std::vector<SDL_Point> TileCollider::getColliderPoints()
+std::vector<SDL_FPoint> TileCollider::getColliderPoints()
 {
 	return colliderPoints;
 }

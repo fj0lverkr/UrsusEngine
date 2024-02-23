@@ -9,17 +9,17 @@ struct PolygonTransformComponent : public Component
 	Vector2D position;
 	Vector2D velocity;
 
-    SDL_Point* points;
+    SDL_FPoint* points;
     int pointCount;
 	int scale;
 	int speed;
 
-    PolygonTransformComponent(float x, float y, std::vector<SDL_Point> points, int scale, int speed)
+    PolygonTransformComponent(float x, float y, std::vector<SDL_FPoint> points, int scale, int speed)
     {
         position = { x, y };
         velocity = { 0, 0 };
         pointCount = points.size();
-        this->points = new SDL_Point[pointCount];
+        this->points = new SDL_FPoint[pointCount];
         for (int i = 0; i < pointCount; i++) {
             this->points[i].x = x + points[i].x * scale;
             this->points[i].y = y + points[i].y * scale;

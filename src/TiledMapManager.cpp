@@ -144,15 +144,15 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 							}
 							else
 							{
-								std::vector<SDL_Point> tileColliderPoints = {};
+								std::vector<SDL_FPoint> tileColliderPoints = {};
 								//use getPoints() the get a vector of points to draw a more complex shape
 								//this means we need to add a different type of ColliderComponent as the regular one takes an SDL_Rect for the shape.
 								for (auto& p : o.getPoints())
 								{
-									SDL_Point point = { static_cast<int>(p.x), static_cast<int>(p.y) };
+									SDL_FPoint point = { p.x, p.y };
 									tileColliderPoints.emplace_back(point);
-									tileColliders.emplace_back(TileCollider{ o.getPosition().x, o.getPosition().y, tileColliderPoints, tag });
 								}
+								tileColliders.emplace_back(TileCollider{ o.getPosition().x, o.getPosition().y, tileColliderPoints, tag });
 							}
 						}
 						
@@ -198,7 +198,7 @@ void TiledMapManager::AddTile(int srcX, int srcY, int x, int y, const char* tile
 
 			if (debug)
 			{
-				box.addComponent<PolygonSpriteComponent>("assets/placeholder.png", false);
+				box.addComponent<PolygonLinesComponent>();
 			}
 		}
 
