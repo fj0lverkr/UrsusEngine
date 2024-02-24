@@ -18,12 +18,17 @@ struct PolygonTransformComponent : public Component
     {
         position = { x, y };
         velocity = { 0, 0 };
-        pointCount = points.size();
+        pointCount = points.size() + 1;
         this->points = new SDL_FPoint[pointCount];
-        for (int i = 0; i < pointCount; i++) {
+        for (int i = 0; i < pointCount -1; i++) {
             this->points[i].x = x + points[i].x * scale;
             this->points[i].y = y + points[i].y * scale;
         }
+
+        //add one extra point so the polygon is a closed shape
+        this->points[points.size()].x = this->points[0].x;
+        this->points[points.size()].y = this->points[0].y;
+
         this->scale = scale;
         this->speed = speed;
     }

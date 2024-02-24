@@ -34,7 +34,7 @@ public:
         destPoints = new SDL_FPoint[transform->pointCount];
         for (int i = 0; i < transform->pointCount; i++)
         {
-            destPoints[i] = { transform->points[i].x, transform->points[i].y};
+            destPoints[i] = transform->points[i];
         }
     }
 
