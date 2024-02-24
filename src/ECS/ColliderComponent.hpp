@@ -6,10 +6,17 @@
 #include <boost/uuid/uuid_io.hpp>
 #include "Components.hpp"
 
+enum ColliderType
+{
+    AABB,
+    Polygon,
+};
+
 class ColliderComponent : public Component
 {
 private:
     boost::uuids::random_generator gen;
+    ColliderType type;
 
 public:
     SDL_FRect collider = {};
@@ -18,9 +25,10 @@ public:
 
     TransformComponent* transform = {};
 
-    ColliderComponent(std::string t)
+    ColliderComponent(std::string t, ColliderType type)
     {
         tag = t;
+        this->type = type;
     }
 
     void init() override
@@ -46,5 +54,10 @@ public:
         collider.y = transform->position.y - Game::camera.GetViewFinder().y;
         collider.w = transform->width * transform->scale;
         collider.h = transform->height * transform->scale;
+    }
+
+    ColliderType getType() const
+    {
+        return this->type;
     }
 };

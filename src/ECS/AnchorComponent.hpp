@@ -18,6 +18,7 @@ private:
     float customX = 0.0f;
     float customY = 0.0f;
     float offset;
+    bool debug;
 
 public:
     const enum AnchorType
@@ -34,27 +35,30 @@ public:
 
     TransformComponent* transform = {};
 
-    AnchorComponent(std::string t, float x, float y)
+    AnchorComponent(std::string t, float x, float y, bool debug = false)
     {
         tag = t;
         this->type = AnchorCustom;
         customX = x;
         customY = y;
         this->offset = 0.0f;
+        this->debug = debug;
     }
 
-    AnchorComponent(std::string t, Uint64 type)
+    AnchorComponent(std::string t, Uint64 type, bool debug = false)
     {
         tag = t;
         this->type = type;
         this->offset = 0.0f;
+        this->debug = debug;
     }
 
-    AnchorComponent(std::string t, Uint64 type, float offsetTop, float offsetBottom)
+    AnchorComponent(std::string t, Uint64 type, float offsetTop, float offsetBottom, bool debug = false)
     {
         tag = t;
         this->type = type;
         this->offset = offsetTop - offsetBottom;
+        this->debug = debug;
     }
 
     void init() override
@@ -105,7 +109,10 @@ public:
 
     void draw() override
     {
-        TextureManager::Draw(texture, { 0, 0, 32, 32 }, { collider.x, collider.y, collider.w, collider.h }, SDL_FLIP_NONE);
+        if (debug)
+        {
+            TextureManager::Draw(texture, { 0, 0, 32, 32 }, { collider.x, collider.y, collider.w, collider.h }, SDL_FLIP_NONE);
+        }
     }
 
     ~AnchorComponent()

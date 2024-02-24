@@ -184,7 +184,7 @@ void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, const char* 
 			float boxX = x + c.getColliderRect().x * scaleFactor;
 			float boxY = y + c.getColliderRect().y * scaleFactor;
 			box.addComponent<TransformComponent>(boxX, boxY, c.getColliderRect().w, c.getColliderRect().h, scaleFactor);
-			box.addComponent<ColliderComponent>(c.getColliderTag());
+			box.addComponent<ColliderComponent>(c.getColliderTag(), ColliderType::AABB);
 
 			if (debug)
 			{
@@ -199,7 +199,7 @@ void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, const char* 
 
 			if (debug)
 			{
-				box.addComponent<ColliderComponent>(c.getColliderTag()); //for now, just to get it to draw the sprite, we will rework colliders later.
+				box.addComponent<ColliderComponent>(c.getColliderTag(), ColliderType::Polygon); //for now, just to get it to draw the sprite, we will rework colliders later.
 				box.addComponent<PolygonLinesComponent>();
 			}
 		}
