@@ -25,16 +25,15 @@ struct PolygonTransformComponent : public Component
             this->points[i].y = y + points[i].y * scale;
         }
 
-        //add one extra point so the polygon is a closed shape
-        this->points[points.size()].x = this->points[0].x;
-        this->points[points.size()].y = this->points[0].y;
-
         this->scale = scale;
         this->speed = speed;
     }
 
     void init() override
     {
+        //add one extra point so the polygon is a closed shape
+        this->points[pointCount - 1].x = this->points[0].x;
+        this->points[pointCount - 1].y = this->points[0].y;
         velocity.Zero();
     }
 
