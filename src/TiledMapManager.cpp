@@ -196,10 +196,10 @@ void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, const char* 
 			float posX = x + c.getColliderPosition().x * scaleFactor;
 			float posY = y + c.getColliderPosition().y * scaleFactor;
 			box.addComponent<PolygonTransformComponent>(posX, posY, c.getColliderPoints(), scaleFactor, 0);
+			box.addComponent<ColliderComponent>(c.getColliderTag(), ColliderType::Polygon);
 
 			if (debug)
 			{
-				box.addComponent<ColliderComponent>(c.getColliderTag(), ColliderType::Polygon); //for now, just to get it to draw the sprite, we will rework colliders later.
 				box.addComponent<PolygonLinesComponent>();
 			}
 		}

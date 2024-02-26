@@ -83,6 +83,10 @@ void Game::update() const
         {
             player.GetComponent<TransformComponent>().position = playerPos;
         }
+        if (Collision::PointCollision(c->GetComponent<ColliderComponent>(), player.GetComponent<AnchorComponent>()))
+        {
+            player.GetComponent<TransformComponent>().position = playerPos;
+        }
     }
 
     camera.follow(player.GetComponent<TransformComponent>().position, windowWidth, windowHeight);

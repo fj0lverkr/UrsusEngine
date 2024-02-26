@@ -17,9 +17,14 @@ class AnchorComponent;
 
 class Collision
 {
+private:
+    static bool LineCollision(SDL_FPoint& pointA, SDL_FPoint& pointB, const SDL_FRect& rect);
+    static bool LineCollision(const SDL_FPoint& pointA, const SDL_FPoint& pointB, const SDL_FPoint& pointC, const SDL_FPoint& pointD);
 public:
-    static bool AABB(const SDL_FRect &rectA, const SDL_FRect &rectB);
-    static bool AABB(const ColliderComponent &colA, const ColliderComponent &colB);
+    static bool AABB(const SDL_FRect& rectA, const SDL_FRect& rectB);
+    static bool AABB(const ColliderComponent& colA, const ColliderComponent& colB);
     static bool AABB(const ColliderComponent& col, const AnchorComponent& anch);
     static bool AABB(const AnchorComponent& anchA, const AnchorComponent& anchB);
+    static bool PointCollision(const ColliderComponent& colA, const ColliderComponent& colB);
+    static bool PointCollision(const ColliderComponent& col, const AnchorComponent& anch);
 };
