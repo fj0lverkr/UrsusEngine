@@ -15,13 +15,6 @@ bool Collision::LineCollision(const SDL_FPoint& pointA, const SDL_FPoint& pointB
 
 bool Collision::AABB(const SDL_FRect& rectA, const SDL_FRect& rectB)
 {
-    /* This is how we used to do it and is why these methods are called AABB.
-    return rectA.x + rectA.w >= rectB.x &&
-           rectB.x + rectB.w >= rectA.x &&
-           rectA.y + rectA.h >= rectB.y &&
-           rectB.y + rectB.h >= rectA.y;
-    */
-
     return SDL_HasIntersectionF(&rectA, &rectB);
 }
 
