@@ -26,13 +26,14 @@ public:
     SDL_RendererFlip spriteFlip = SDL_FLIP_NONE;
 
     SpriteComponent() = default;
-    SpriteComponent(const char *path, bool isPlayer)
+
+    SpriteComponent(std::string assetId, bool isPlayer)
     {
-        swapTexture(path);
+        swapTexture(assetId);
         this->isPlayer = isPlayer;
     }
 
-    SpriteComponent(const char *path, bool isAnimated,bool isPlayer)
+    SpriteComponent(std::string assetId, bool isAnimated,bool isPlayer)
     {
         this->isPlayer = isPlayer;
         animated = isAnimated;
@@ -48,12 +49,11 @@ public:
 
         Play("Idle");
 
-        swapTexture(path);
+        swapTexture(assetId);
     }
 
     ~SpriteComponent()
     {
-        SDL_DestroyTexture(texture);
     }
 
     void init() override
@@ -85,9 +85,9 @@ public:
         TextureManager::Draw(texture, srcRect, destRect, spriteFlip);
     }
 
-    void swapTexture(const char *path)
+    void swapTexture(std::string assetId)
     {
-        texture = TextureManager::LoadTexture(path);
+        texture = Game::assets->GetTexture(assetId);
     }
 
     void Play(const char *animName)

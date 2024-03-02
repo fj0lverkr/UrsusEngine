@@ -6,6 +6,7 @@
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include "Game.hpp"
 #include "Components.hpp"
 
 class AnchorComponent : public Component
@@ -63,7 +64,7 @@ public:
 
     void init() override
     {
-        texture = TextureManager::LoadTexture("assets/placeholder.png");
+        texture = Game::assets->GetTexture("Placeholder");
         if (!entity->hasComponent<TransformComponent>())
         {
             entity->addComponent<TransformComponent>();
@@ -117,7 +118,6 @@ public:
 
     ~AnchorComponent()
     {
-        SDL_DestroyTexture(texture);
     }
 
     Uint64 getType() const

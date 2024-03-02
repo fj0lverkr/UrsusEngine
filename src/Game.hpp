@@ -3,8 +3,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "Camera2D.hpp"
+#include "AssetManager.hpp"
 
 class ColliderComponent;
+class AssetManager;
 
 class Game
 {
@@ -23,7 +25,8 @@ public:
     void render();
     void clean();
 
-    static SDL_Renderer *renderer;
+    static SDL_Renderer* renderer;
+    static AssetManager* assets;
     static SDL_Event event;
     static bool isRunning;
     static Camera2D camera;

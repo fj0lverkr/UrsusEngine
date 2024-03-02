@@ -10,10 +10,9 @@ bool Game::isDebug = false;
 Camera2D Game::camera;
 
 Manager manager;
+AssetManager* Game::assets = new AssetManager(&manager);
 
 auto &player(manager.addEntity());
-
-const std::string levelMap = "assets/tiled/testmap.tmx";
 
 TiledMapManager mapManager;
 
@@ -57,11 +56,16 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     {
         isRunning = false;
     }
-    mapManager.loadMap(levelMap, 2, true);
+    //TODO move this to the AssetManager and let it load all tmx files in a given folder. Same with any other conceivable assets so we can later load them.
+    Game::assets->AddTiledMap("Main", "assets/tiled/testmap.tmx");
+    Game::assets->AddTexture("PlayerSprite", "assets/sprites/player_anim.png");
+    Game::assets->AddTexture("Placeholder", "assets/placeholder.png");
+
+    mapManager.loadMap("Main", 2, true);
 
     player.addGroup(groupPlayers);
     player.addComponent<TransformComponent>(static_cast<float>(windowWidth) / 2, static_cast<float>(windowHeight) / 2, 32.0f, 32.0f, 2);
-    player.addComponent<SpriteComponent>("assets/sprites/player_anim.png", true, true);
+    player.addComponent<SpriteComponent>("PlayerSprite", true, true);
     player.addComponent<ColliderComponent>("player", ColliderType::AABB);
     player.addComponent<AnchorComponent>("playerAnchor", AnchorComponent::AnchorBottom, 0.0f, 10.0f, isDebug);
     player.addComponent<KeyboardController>();

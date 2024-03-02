@@ -1,7 +1,7 @@
 #pragma once
 #include "ECS.hpp"
 #include "TransformComponent.hpp"
-#include "SpriteComponent.hpp"
+#include "Game.hpp"
 #include <SDL2/SDL.h>
 
 class TileComponent : public Component
@@ -10,7 +10,7 @@ private:
     int scale = 1;
 
 public:
-    SDL_Texture *texture;
+    SDL_Texture* texture;
     SDL_Rect srcRect;
     SDL_FRect destRect;
     Vector2D position;
@@ -22,10 +22,10 @@ public:
         SDL_DestroyTexture(texture);
     }
 
-    TileComponent(int srcX, int srcY, float posX, float posY, const char *path, int tileSize, int scaleFactor)
+    TileComponent(int srcX, int srcY, float posX, float posY, std::string assetId, int tileSize, int scaleFactor)
     {
         scale = scaleFactor > 1 ? scaleFactor : 1;
-        texture = TextureManager::LoadTexture(path);
+        texture = Game::assets->GetTexture(assetId);
         srcRect.x = srcX;
         srcRect.y = srcY;
         srcRect.w = srcRect.h = tileSize;

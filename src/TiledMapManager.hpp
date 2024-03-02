@@ -11,10 +11,10 @@
 class TiledMapManager
 {
 private:
-	void AddTile(int srcX, int srcY, float x, float y, const char* tilesetPath, int tileSize, int scaleFactor, std::vector<TileCollider> &colliders, bool debug) const;
+	void AddTile(int srcX, int srcY, float x, float y, std::string tilesetAssetId, int tileSize, int scaleFactor, std::vector<TileCollider> &colliders, bool debug) const;
 
 public:
 	TiledMapManager();
 	~TiledMapManager();
-	void loadMap(std::string filePath, int scaleFactor = 0, bool debug = false);
+	void loadMap(std::string mapAssetId, int scaleFactor = 0, bool debug = false);
 };

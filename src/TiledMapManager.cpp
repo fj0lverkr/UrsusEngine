@@ -1,7 +1,5 @@
 #include "TiledMapManager.hpp"
 #include "Game.hpp"
-#include "TextureManager.hpp"
-#include "ECS/ECS.hpp"
 #include "ECS/Components.hpp"
 
 extern Manager manager;
@@ -14,14 +12,14 @@ TiledMapManager::~TiledMapManager()
 {
 }
 
-void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
+void TiledMapManager::loadMap(std::string mapAssetId, int scaleFactor, bool debug)
 {
 	scaleFactor = scaleFactor < 1 ? 1 : scaleFactor;
 	tmx::Map map;
-	std::map<uint32_t, const char*> tilesetTextureCollection;
+	std::map<uint32_t, std::string> tilesetTextureCollection;
 	std::map<uint32_t, const std::vector<tmx::Tileset::Tile>> tilesetSpecialTilesCollection;
 
-	if (map.load(filePath))
+	if (Game::assets->LoadtiledMap(mapAssetId, &map))
 	{
 		//get dimensions
 		auto& mapDimensions = map.getTileCount();
@@ -36,9 +34,9 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 		auto& tilesets = map.getTilesets();
 		for (auto& tileset : tilesets)
 		{
-			// Grab the associated image
-			const char* imagePath = tileset.getImagePath().c_str();
-			tilesetTextureCollection.insert(std::pair<uint32_t, const char*>(tileset.getFirstGID(), imagePath));
+			// Grab the associated image and put it in our AssetManager
+			Game::assets->AddTexture(tileset.getName(), tileset.getImagePath().c_str());
+			tilesetTextureCollection.insert(std::pair<uint32_t, std::string>(tileset.getFirstGID(), tileset.getName()));
 
 			// Grab the tiles that have non-empty objectgroups
 			std::vector<tmx::Tileset::Tile> tsTiles;
@@ -110,7 +108,7 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 					// Find the dimensions of the tile sheet.
 					int tileSheetWidth = 0;
 					int tileSheetHeight = 0;
-					SDL_Texture *tex = TextureManager::LoadTexture(tilesetTextureCollection[tilesetGid]);
+					SDL_Texture *tex = Game::assets->GetTexture(tilesetTextureCollection[tilesetGid]);
 					SDL_QueryTexture(tex, NULL, NULL, &tileSheetWidth, &tileSheetHeight);
 
 					// Calculate the area on the tilesheet to draw from.
@@ -159,7 +157,6 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 					}
 
 					// Draw the Tile
-					// Note that we currently only take the vector of AABB type colliders (even though they are TileCollider objects), this should accommodate the polygon style colliders as well
 					AddTile(srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid], tileWidth, scaleFactor, tileColliders, debug);
 				}
 			}
@@ -171,10 +168,10 @@ void TiledMapManager::loadMap(std::string filePath, int scaleFactor, bool debug)
 	}
 }
 
-void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, const char* tilesetPath, int tileSize, int scaleFactor, std::vector<TileCollider> &colliders, bool debug) const
+void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, std::string tilesetAssetId, int tileSize, int scaleFactor, std::vector<TileCollider> &colliders, bool debug) const
 {
 	auto& tile(manager.addEntity());
-	tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetPath, tileSize, scaleFactor);
+	tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetAssetId, tileSize, scaleFactor);
 	tile.addGroup(Game::groupMap);
 	for (auto& c : colliders)
 	{
@@ -188,7 +185,7 @@ void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, const char* 
 
 			if (debug)
 			{
-				box.addComponent<SpriteComponent>("assets/placeholder.png", false);
+				box.addComponent<SpriteComponent>("Placeholder", false);
 			}
 		}
 		else
