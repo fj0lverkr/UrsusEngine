@@ -144,6 +144,8 @@
     <ClInclude Include="src\ecs\ColliderComponent.hpp" />
     <ClInclude Include="src\ecs\Components.hpp" />
     <ClInclude Include="src\ecs\ECS.hpp" />
+    <ClInclude Include="src\ECS\EventSystem\EventReceiver.hpp" />
+    <ClInclude Include="src\ECS\EventSystem\KeyboardEventReceiver.hpp" />
     <ClInclude Include="src\ecs\KeyboardController.hpp" />
     <ClInclude Include="src\ECS\PolygonLinesComponent.hpp" />
     <ClInclude Include="src\ECS\PolygonTransformComponent.hpp" />
