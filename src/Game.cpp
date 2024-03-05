@@ -8,9 +8,11 @@ SDL_Renderer *Game::renderer = nullptr;
 bool Game::isRunning = false;
 bool Game::isDebug = false;
 Camera2D Game::camera;
+SDL_Event Game::event;
 
 Manager manager;
 AssetManager* Game::assets = new AssetManager(&manager);
+KeyboardController keyboardController = {};
 
 auto &player(manager.addEntity());
 
@@ -69,6 +71,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player.addComponent<ColliderComponent>("player", ColliderType::AABB);
     player.addComponent<AnchorComponent>("playerAnchor", AnchorComponent::AnchorBottom, 0.0f, 10.0f, isDebug);
     player.addComponent<KeyboardController>();
+
+    keyboardController = player.GetComponent<KeyboardController>();
 }
 
 auto& mapTiles(manager.getGroup(Game::groupMap));
@@ -78,6 +82,18 @@ auto& enemies(manager.getGroup(Game::groupEnemies));
 
 void Game::update() const
 {
+    while (SDL_PollEvent(&event))
+    {
+        if (event.type == SDL_QUIT)
+        {
+            Game::isRunning = false;
+        }
+        if (keyboardController.HandleEvent(&event))
+        {
+            continue;
+        }
+    }
+
     Vector2D playerPos = player.GetComponent<TransformComponent>().position;
     manager.refresh();
     manager.update();

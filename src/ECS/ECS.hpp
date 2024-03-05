@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <SDL2/SDL.h>
 
 class Component;
 class Entity;
@@ -35,16 +36,44 @@ using ComponentArray = std::array<Component *, maxComponents>;
 
 using GroupBitset = std::bitset<maxGroups>;
 
+class EventReceiver
+{
+public:
+    virtual bool handleEvent(const SDL_Event* e)
+    {
+        return false;
+    }
+};
+
 class Component
 {
+private:
+    std::vector<EventReceiver*> subscribers;
 public:
     Entity* entity = {};
 
-  virtual void init(){};
-  virtual void update(){};
-  virtual void draw(){};
+    virtual void init(){};
+    virtual void update(){};
+    virtual void draw(){};
+    virtual ~Component(){};
 
-  virtual ~Component(){};
+    //Event handling by components
+    bool HandleEvent(const SDL_Event* e)
+    {
+        for (const auto handler : subscribers)
+        {
+            if (handler->handleEvent(e))
+            {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    void SubscribeToEvents(EventReceiver* receiver)
+    {
+        subscribers.push_back(receiver);
+    }
 };
 
 class Entity

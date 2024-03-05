@@ -2,12 +2,10 @@
 #include "../Game.hpp"
 #include "Components.hpp"
 
-class KeyboardController : public Component
+class KeyboardEventHandler : public EventReceiver
 {
-private: 
+private:
     TransformComponent* transform = {};
-    SpriteComponent* sprite = {};
-    SDL_Event event = {};
 
     void resetVelocity(bool isHorizontal)
     {
@@ -34,23 +32,21 @@ private:
             }
         }
     }
-
 public:
-    void init() override
+    void setTransform(TransformComponent* t)
     {
-        transform = &entity->GetComponent<TransformComponent>();
-        sprite = &entity->GetComponent<SpriteComponent>();
+        transform = t;
     }
 
-    void update() override
+    bool handleEvent(const SDL_Event* e) override
     {
-        while (SDL_PollEvent(&event))
+        if (e->type == SDL_KEYDOWN || e->type == SDL_KEYUP)
         {
-            if (event.key.repeat == 0)
+            if (e->key.repeat == 0)
             {
-                if (event.type == SDL_KEYDOWN)
+                if (e->type == SDL_KEYDOWN)
                 {
-                    switch (event.key.keysym.sym)
+                    switch (e->key.keysym.sym)
                     {
                     case SDLK_w:
                         transform->velocity.y = -1;
@@ -69,9 +65,9 @@ public:
                     }
                 }
 
-                if (event.type == SDL_KEYUP)
+                if (e->type == SDL_KEYUP)
                 {
-                    switch (event.key.keysym.sym)
+                    switch (e->key.keysym.sym)
                     {
                     case SDLK_w:
                         if (transform->velocity.y < 0)
@@ -109,32 +105,52 @@ public:
                     }
                 }
             }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+};
 
-            if (event.type == SDL_QUIT)
-            {
-                Game::isRunning = false;
-            }
+class KeyboardController : public Component
+{
+private: 
+    TransformComponent* transform = {};
+    SpriteComponent* sprite = {};
+    KeyboardEventHandler keyboardHandler;
 
-            if (transform->velocity.IsZero())
+public:
+    void init() override
+    {
+        transform = &entity->GetComponent<TransformComponent>();
+        sprite = &entity->GetComponent<SpriteComponent>();
+        keyboardHandler.setTransform(transform);
+        SubscribeToEvents(&keyboardHandler);
+    }
+
+    void update() override
+    {
+        if (transform->velocity.IsZero())
+        {
+            sprite->Play("Idle");
+        }
+        else
+        {
+            // set the correct animation
+            if (transform->velocity.x == 0)
             {
-                sprite->Play("Idle");
+                sprite->Play("WalkFront");
+                sprite->spriteFlip = transform->velocity.y > 0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
             }
             else
             {
-                // set the correct animation
-                if (transform->velocity.x == 0)
+                sprite->Play("WalkSide");
+                sprite->spriteFlip = transform->velocity.x > 0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+                if (transform->velocity.y != 0)
                 {
-                    sprite->Play("WalkFront");
-                    sprite->spriteFlip = transform->velocity.y > 0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
-                }
-                else
-                {
-                    sprite->Play("WalkSide");
-                    sprite->spriteFlip = transform->velocity.x > 0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
-                    if (transform->velocity.y != 0)
-                    {
-                        transform->velocity.Normalize();
-                    }
+                    transform->velocity.Normalize();
                 }
             }
         }
