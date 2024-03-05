@@ -8,6 +8,8 @@
 #include <vector>
 #include <SDL2/SDL.h>
 
+#include "EventSystem/EventReceiver.hpp"
+
 class Component;
 class Entity;
 class Manager;
@@ -17,15 +19,15 @@ using Group = std::size_t;
 
 inline ComponentId getNewComponentTypeId()
 {
-  static ComponentId lastId = 0u;
-  return lastId++;
+    static ComponentId lastId = 0u;
+    return lastId++;
 };
 
 template <typename T>
 inline ComponentId getComponentTypeId() noexcept
 {
-  static ComponentId typeId = getNewComponentTypeId();
-  return typeId;
+    static ComponentId typeId = getNewComponentTypeId();
+    return typeId;
 }
 
 constexpr std::size_t maxComponents = 32;
@@ -35,15 +37,6 @@ using ComponentBitset = std::bitset<maxComponents>;
 using ComponentArray = std::array<Component *, maxComponents>;
 
 using GroupBitset = std::bitset<maxGroups>;
-
-class EventReceiver
-{
-public:
-    virtual bool handleEvent(const SDL_Event* e)
-    {
-        return false;
-    }
-};
 
 class Component
 {
@@ -79,71 +72,71 @@ public:
 class Entity
 {
 private:
-  Manager &manager;
-  bool active = true;
-  std::vector<std::unique_ptr<Component>> components;
-  ComponentArray componentArray = {};
-  ComponentBitset componentBitset;
-  GroupBitset groupBitset;
+    Manager &manager;
+    bool active = true;
+    std::vector<std::unique_ptr<Component>> components;
+    ComponentArray componentArray = {};
+    ComponentBitset componentBitset;
+    GroupBitset groupBitset;
 
 public:
-  Entity(Manager &mMananger) : manager(mMananger) {}
+    Entity(Manager &mMananger) : manager(mMananger) {}
 
-  void update()
-  {
-    for (auto &c : components)
-      c->update();
-  }
+    void update()
+    {
+        for (auto &c : components)
+            c->update();
+    }
 
-  void draw()
-  {
-    for (auto &c : components)
-      c->draw();
-  }
+    void draw()
+    {
+        for (auto &c : components)
+            c->draw();
+    }
 
-  bool isActive() const { return active; }
+    bool isActive() const { return active; }
 
-  void destroy() { active = false; }
+    void destroy() { active = false; }
 
-  bool hasGroup(Group mGroup)
-  {
-    return groupBitset[mGroup];
-  }
+    bool hasGroup(Group mGroup)
+    {
+        return groupBitset[mGroup];
+    }
 
-  void addGroup(Group mGroup);
+    void addGroup(Group mGroup);
 
-  void delGroup(Group mGroup)
-  {
-    groupBitset[mGroup] = false;
-  }
+    void delGroup(Group mGroup)
+    {
+        groupBitset[mGroup] = false;
+    }
 
-  template <typename T>
-  bool hasComponent() const
-  {
-    return componentBitset[getComponentTypeId<T>()];
-  }
+    template <typename T>
+    bool hasComponent() const
+    {
+        return componentBitset[getComponentTypeId<T>()];
+    }
 
-  template <typename T, typename... TArgs>
-  T &addComponent(TArgs &&...mArgs)
-  {
-    T *c(new T(std::forward<TArgs>(mArgs)...));
-    c->entity = this;
-    std::unique_ptr<Component> uPtr{c};
-    components.emplace_back(std::move(uPtr));
+    template <typename T, typename... TArgs>
+    T &addComponent(TArgs &&...mArgs)
+    {
+        T *c(new T(std::forward<TArgs>(mArgs)...));
+        c->entity = this;
+        std::unique_ptr<Component> uPtr{c};
+        components.emplace_back(std::move(uPtr));
 
-    componentArray[getComponentTypeId<T>()] = c;
-    componentBitset[getComponentTypeId<T>()] = true;
+        componentArray[getComponentTypeId<T>()] = c;
+        componentBitset[getComponentTypeId<T>()] = true;
 
-    c->init();
-    return *c;
-  }
+        c->init();
+        return *c;
+    }
 
-  template <typename T>
-  T &GetComponent() const
-  {
-    auto ptr(componentArray[getComponentTypeId<T>()]);
-    return *static_cast<T *>(ptr);
-  }
+    template <typename T>
+    T &GetComponent() const
+    {
+        auto ptr(componentArray[getComponentTypeId<T>()]);
+        return *static_cast<T *>(ptr);
+    }
 };
 
 class Manager
@@ -171,14 +164,14 @@ public:
     {
       auto &v(groupedEntities[i]);
       v.erase(std::remove_if(std::begin(v), std::end(v), [i](Entity *mEntity)
-                             { return !mEntity->isActive() || !mEntity->hasGroup(i); }),
-              std::end(v));
+        { return !mEntity->isActive() || !mEntity->hasGroup(i); }),
+        std::end(v));
     }
 
     entities.erase(std::remove_if(std::begin(entities), std::end(entities), [](const std::unique_ptr<Entity> &mEntity)
-                                  { return !mEntity->isActive(); }),
-                   std::end(entities));
-  }
+        { return !mEntity->isActive(); }),
+        std::end(entities));
+}
 
   void addToGroup(Entity *mEntity, Group mGroup)
   {
