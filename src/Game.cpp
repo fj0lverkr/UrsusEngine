@@ -12,7 +12,7 @@ SDL_Event Game::event;
 
 Manager manager;
 AssetManager* Game::assets = new AssetManager(&manager);
-KeyboardController keyboardController = {};
+KeyboardController Game::keyboardController;
 
 auto &player(manager.addEntity());
 

@@ -7,11 +7,13 @@
 
 class ColliderComponent;
 class AssetManager;
+class KeyboardController;
 
 class Game
 {
 private:
     static bool isDebug;
+    static KeyboardController keyboardController;
     SDL_Window* window;
     int cnt = 0;
     int windowWidth, windowHeight;
