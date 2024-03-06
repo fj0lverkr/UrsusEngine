@@ -60,11 +60,12 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
     //TODO move this to the AssetManager and let it load all tmx files in a given folder. Same with any other conceivable assets so we can later load them.
-    Game::assets->AddTiledMap("Main", "assets/tiled/testmap.tmx");
+    //Game::assets->AddTiledMap("Main", "assets/tiled/testmap.tmx");
+    Game::assets->AddTiledMaps("assets/tiled");
     Game::assets->AddTexture("PlayerSprite", "assets/sprites/player_anim.png");
     Game::assets->AddTexture("Placeholder", "assets/placeholder.png");
 
-    mapManager.loadMap("Main", 2, true);
+    mapManager.loadMap("testmap", 2, true);
 
     player.addGroup(groupPlayers);
 
