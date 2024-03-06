@@ -16,7 +16,6 @@ private:
     SDL_FRect destRect;
 
     bool animated = false;
-    bool isPlayer = false;
     int frames = 0;
     int animationSpeed = 100;
 
@@ -30,24 +29,15 @@ public:
     SpriteComponent(std::string assetId, bool isPlayer)
     {
         swapTexture(assetId);
-        this->isPlayer = isPlayer;
     }
 
-    SpriteComponent(std::string assetId, bool isAnimated,bool isPlayer)
+    SpriteComponent(std::string assetId, std::map<const char*, Animation> animations, const char* idleAnimation)
     {
-        this->isPlayer = isPlayer;
-        animated = isAnimated;
+        animated = true;
 
-        // TODO this is now very specific for our player, we should rework this...
-        Animation idle = Animation(0, 9, 100);
-        Animation walk_side = Animation(1, 7, 100);
-        Animation walk_front = Animation(2, 7, 100);
+        this->animations = animations;
 
-        animations.emplace("Idle", idle);
-        animations.emplace("WalkSide", walk_side);
-        animations.emplace("WalkFront", walk_front);
-
-        Play("Idle");
+        Play(idleAnimation);
 
         swapTexture(assetId);
     }
@@ -59,7 +49,6 @@ public:
     void init() override
     {
         transform = &entity->GetComponent<TransformComponent>();
-
         srcRect.x = srcRect.y = 0;
         srcRect.w = static_cast<int>(transform->width);
         srcRect.h = static_cast<int>(transform->height);

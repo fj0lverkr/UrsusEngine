@@ -2,6 +2,7 @@
 #include "TiledMapManager.hpp"
 #include "Collision.hpp"
 #include "ECS/Components.hpp"
+#include "ECS//Animation.hpp"
 
 SDL_Renderer *Game::renderer = nullptr;
 
@@ -66,8 +67,18 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     mapManager.loadMap("Main", 2, true);
 
     player.addGroup(groupPlayers);
+
+    // setup player sprite animation
+    std::map<const char*, Animation> playerAnimations;
+    Animation idle = Animation(0, 9, 100);
+    Animation walkSide = Animation(1, 7, 100);
+    Animation walkFront = Animation(2, 7, 100);
+    playerAnimations.emplace("Idle", idle);
+    playerAnimations.emplace("WalkSide", walkSide);
+    playerAnimations.emplace("WalkFront", walkFront);
+
     player.addComponent<TransformComponent>(static_cast<float>(windowWidth) / 2, static_cast<float>(windowHeight) / 2, 32.0f, 32.0f, 2);
-    player.addComponent<SpriteComponent>("PlayerSprite", true, true);
+    player.addComponent<SpriteComponent>("PlayerSprite", playerAnimations, "Idle");
     player.addComponent<ColliderComponent>("player", ColliderType::AABB);
     player.addComponent<AnchorComponent>("playerAnchor", AnchorComponent::AnchorBottom, 0.0f, 10.0f, isDebug);
     player.addComponent<KeyboardController>();
