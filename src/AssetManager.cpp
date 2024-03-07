@@ -1,4 +1,5 @@
 #include "AssetManager.hpp"
+#include "Util/StringUtils.hpp"
 
 AssetManager::AssetManager(Manager* man) : manager(man)
 {
@@ -13,7 +14,7 @@ void AssetManager::AddTexture(std::string id, const char* path)
 	texturesMap.emplace(id, TextureManager::LoadTexture(path));
 }
 
-void AssetManager::AddTiledMap(std::string id, const char* path)
+void AssetManager::AddTiledMap(std::string id, const std::string path)
 {
 	tiledMapsMap.emplace(id, path);
 }
@@ -30,10 +31,9 @@ void AssetManager::AddTiledMaps(const char* p)
 			if (extension == ".tmx")
 			{
 				const auto& name = path.filename().string().substr(0, path.filename().string().size() - 4);
-				std::string filepath = path.string();
-				filepath = ReplaceAll(filepath, std::string("\\"), std::string("/"));
-				const char* assetPath = filepath.c_str();
-				AddTiledMap(name, filepath.c_str());
+				std::string filePath = path.string();
+				filePath = StringUtils::ReplaceAll(filePath, std::string("\\"), std::string("/"));
+				AddTiledMap(name, filePath);
 			}
 		}
 	}
