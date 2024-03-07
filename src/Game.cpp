@@ -2,7 +2,7 @@
 #include "TiledMapManager.hpp"
 #include "Collision.hpp"
 #include "ECS/Components.hpp"
-#include "ECS//Animation.hpp"
+#include "ECS/Animation.hpp"
 
 SDL_Renderer *Game::renderer = nullptr;
 
