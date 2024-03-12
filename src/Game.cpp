@@ -1,8 +1,9 @@
+#include <sstream>
 #include "Game.hpp"
 #include "TiledMapManager.hpp"
 #include "Collision.hpp"
 #include "ECS/Components.hpp"
-#include "ECS//Animation.hpp"
+#include "ECS/Animation.hpp"
 
 SDL_Renderer *Game::renderer = nullptr;
 
@@ -15,7 +16,10 @@ Manager manager;
 AssetManager* Game::assets = new AssetManager(&manager);
 KeyboardController Game::keyboardController;
 
-auto &player(manager.addEntity());
+UILabel* Game::debugLabel = nullptr;
+
+auto& player(manager.addEntity());
+auto& debugHud(manager.addEntity());
 
 TiledMapManager mapManager;
 
@@ -52,6 +56,10 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
                 SDL_SetRenderDrawColor(renderer, rendererColor.r, rendererColor.g, rendererColor.b, rendererColor.a);
                 isRunning = true;
                 Game::camera = {0.0f, 0.0f, width, height};
+                if (TTF_Init() == -1)
+                {
+                    std::cout << "Error initialtizing SDL_ttf, font rendering might be disabled." << std::endl;
+                }
             }
         }
     }
@@ -63,10 +71,12 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     //TODO move this to the AssetManager and let it load all png files in a given folder.
     Game::assets->AddTexture("PlayerSprite", "assets/sprites/player_anim.png");
     Game::assets->AddTexture("Placeholder", "assets/placeholder.png");
+    Game::assets->AddFont("Swansea_16", "assets/fonts/Swansea.ttf", 16);
 
-    mapManager.loadMap("testmap", 2, true);
+    mapManager.LoadMap("testmap", 2, true);
 
-    player.addGroup(groupPlayers);
+    player.AddGroup(groupPlayers);
+    debugHud.AddGroup(groupUI);
 
     // setup player sprite animation
     std::map<const char*, Animation> playerAnimations;
@@ -84,15 +94,29 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player.addComponent<KeyboardController>();
 
     keyboardController = player.GetComponent<KeyboardController>();
+
+    debugHud.addComponent<TransformComponent>(10.0f, 10.0f);
+    debugHud.addComponent<UILabel>("Test", "Swansea_16");
+
+    debugLabel = &debugHud.GetComponent<UILabel>();
 }
 
 auto& mapTiles(manager.getGroup(Game::groupMap));
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
 auto& enemies(manager.getGroup(Game::groupEnemies));
+auto& uiElements(manager.getGroup(Game::groupUI));
 
-void Game::update() const
+void Game::update(int fps) const
 {
+    std::stringstream ss;
+
+    if (isDebug)
+    {
+        ss << "Player: " << player.GetComponent<TransformComponent>().position << " | FPS: " << fps;
+        debugLabel->setLabelText(ss.str());
+    }
+
     while (SDL_PollEvent(&event))
     {
         if (event.type == SDL_QUIT)
@@ -144,6 +168,10 @@ void Game::render()
         {
             c->draw();
         }
+    }
+    for (auto& ui : uiElements)
+    {
+        ui->draw();
     }
     SDL_RenderPresent(renderer);
 }

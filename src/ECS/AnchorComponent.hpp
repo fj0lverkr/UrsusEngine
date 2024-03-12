@@ -76,7 +76,7 @@ public:
 
         if (!entity->hasGroup(Game::groupColliders) && !entity->hasGroup(Game::groupPlayers) &&!entity->hasGroup(Game::groupEnemies))
         {
-            entity->addGroup(Game::groupColliders);
+            entity->AddGroup(Game::groupColliders);
         }
 
         collider.h = collider.w = ANCHORSIZE;

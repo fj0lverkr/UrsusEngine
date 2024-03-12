@@ -9,3 +9,6 @@
 #include "ColliderComponent.hpp"
 #include "TileComponent.hpp"
 #include "AnchorComponent.hpp"
+
+// UI Components
+#include "UI/UILabel.hpp"

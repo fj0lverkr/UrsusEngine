@@ -2,18 +2,21 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include "Camera2D.hpp"
 #include "AssetManager.hpp"
 
 class ColliderComponent;
 class AssetManager;
 class KeyboardController;
+class UILabel;
 
 class Game
 {
 private:
     static bool isDebug;
     static KeyboardController keyboardController;
+    static UILabel* debugLabel;
     SDL_Window* window;
     int cnt = 0;
     int windowWidth, windowHeight;
@@ -23,7 +26,7 @@ public:
     ~Game();
 
     void init(const char *title, int xpos, int ypos, int width, int height, bool fullscreen, SDL_Color rendererColor, bool debug);
-    void update() const;
+    void update(int fps) const;
     void render();
     void clean();
 
@@ -39,6 +42,7 @@ public:
         groupMap,
         groupPlayers,
         groupEnemies,
-        groupColliders
+        groupColliders,
+        groupUI
     };
 };

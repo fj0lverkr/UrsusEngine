@@ -12,7 +12,7 @@ TiledMapManager::~TiledMapManager()
 {
 }
 
-void TiledMapManager::loadMap(std::string mapAssetId, int scaleFactor, bool debug)
+void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debug)
 {
 	scaleFactor = scaleFactor < 1 ? 1 : scaleFactor;
 	tmx::Map map;
@@ -172,7 +172,7 @@ void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, std::string 
 {
 	auto& tile(manager.addEntity());
 	tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetAssetId, tileSize, scaleFactor);
-	tile.addGroup(Game::groupMap);
+	tile.AddGroup(Game::groupMap);
 	for (auto& c : colliders)
 	{
 		auto& box(manager.addEntity());

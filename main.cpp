@@ -18,23 +18,33 @@ int main(int argc, char *argv[])
     const SDL_Color WINDOWBG = {255, 255, 255, 255};
 
     Uint64 frameStart;
-    Uint64  frameTime;
+    Uint64 frameTime;
+    Uint64 performanceStart;
+    Uint64 performanceEnd;
+    float elapsed = 0.0f;
+    int fps = 0;
 
     game = new Game();
     game->init(WINDOWTITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOWW, WINDOWH, false, WINDOWBG, DEBUG);
     while (game->isRunning)
     {
         frameStart = SDL_GetTicks64();
+        performanceStart = SDL_GetPerformanceCounter();
 
-        game->update();
+        game->update(fps);
         game->render();
 
         frameTime = SDL_GetTicks64() - frameStart;
+
 
         if (FRAMEDELAY > frameTime)
         {
             SDL_Delay(static_cast<Uint32>(FRAMEDELAY - frameTime));
         }
+
+        performanceEnd = SDL_GetPerformanceCounter();
+        elapsed = (performanceEnd - performanceStart) / (float)SDL_GetPerformanceFrequency();
+        fps = static_cast<int>(1.0f / elapsed);
     }
     game->clean();
     return 0;

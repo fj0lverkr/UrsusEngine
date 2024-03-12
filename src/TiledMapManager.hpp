@@ -16,5 +16,5 @@ private:
 public:
 	TiledMapManager();
 	~TiledMapManager();
-	void loadMap(std::string mapAssetId, int scaleFactor = 0, bool debug = false);
+	void LoadMap(std::string mapAssetId, int scaleFactor = 0, bool debug = false);
 };

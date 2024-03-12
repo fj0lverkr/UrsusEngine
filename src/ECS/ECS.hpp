@@ -103,7 +103,7 @@ public:
         return groupBitset[mGroup];
     }
 
-    void addGroup(Group mGroup);
+    void AddGroup(Group mGroup);
 
     void delGroup(Group mGroup)
     {

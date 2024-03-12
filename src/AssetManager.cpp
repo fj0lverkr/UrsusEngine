@@ -39,6 +39,11 @@ void AssetManager::AddTiledMaps(const char* p)
 	}
 }
 
+void AssetManager::AddFont(std::string id, const char* path, int fontSize)
+{
+	fontsMap.emplace(id, TTF_OpenFont(path, fontSize));
+}
+
 SDL_Texture* AssetManager::GetTexture(std::string id)
 {
 	return texturesMap[id];
@@ -47,4 +52,9 @@ SDL_Texture* AssetManager::GetTexture(std::string id)
 bool AssetManager::LoadtiledMap(std::string id, tmx::Map* tiledMap)
 {
 	return tiledMap->load(tiledMapsMap[id]);
+}
+
+TTF_Font* AssetManager::GetFont(std::string id)
+{
+	return fontsMap[id];
 }
