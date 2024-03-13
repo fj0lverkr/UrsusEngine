@@ -90,7 +90,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     player.addComponent<TransformComponent>(static_cast<float>(windowWidth) / 2, static_cast<float>(windowHeight) / 2, 32.0f, 32.0f, 2);
     player.addComponent<SpriteComponent>("PlayerSprite", playerAnimations, "Idle");
     player.addComponent<ColliderComponent>("player", ColliderType::AABB);
-    player.addComponent<AnchorComponent>("playerAnchor", AnchorComponent::AnchorBottom, 0.0f, 10.0f, isDebug);
+    player.addComponent<AnchorComponent>("playerAnchor", AnchorComponent::AnchorBottom, 0.0f, 2.0f, isDebug);
     player.addComponent<KeyboardController>();
 
     keyboardController = player.GetComponent<KeyboardController>();
