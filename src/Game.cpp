@@ -101,7 +101,8 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, bo
     debugLabel = &debugHud.GetComponent<UILabel>();
 }
 
-auto& mapTiles(manager.getGroup(Game::groupMap));
+auto& mapTiles(manager.getGroup(Game::groupMapTiles));
+auto& mapObjects(manager.getGroup(Game::groupMapObjects));
 auto& players(manager.getGroup(Game::groupPlayers));
 auto& colliders(manager.getGroup(Game::groupColliders));
 auto& enemies(manager.getGroup(Game::groupEnemies));
@@ -153,6 +154,10 @@ void Game::render()
     for (auto &t : mapTiles)
     {
         t->draw();
+    }
+    for (auto& o : mapObjects)
+    {
+        o->draw();
     }
     for (auto &p : players)
     {

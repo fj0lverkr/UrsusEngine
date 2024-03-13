@@ -39,7 +39,8 @@ public:
     // Labels for grouping Entities, we can have up to 32 Groups per Entity
     enum groupLabels : std::size_t
     {
-        groupMap,
+        groupMapTiles,
+        groupMapObjects,
         groupPlayers,
         groupEnemies,
         groupColliders,

@@ -17,6 +17,7 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 	scaleFactor = scaleFactor < 1 ? 1 : scaleFactor;
 	tmx::Map map;
 	std::map<uint32_t, std::string> tilesetTextureCollection;
+	std::map<uint32_t, std::string> tilesetTileTextureCollection;
 	std::map<uint32_t, const std::vector<tmx::Tileset::Tile>> tilesetSpecialTilesCollection;
 
 	if (Game::assets->LoadtiledMap(mapAssetId, &map))
@@ -35,8 +36,23 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 		for (auto& tileset : tilesets)
 		{
 			// Grab the associated image and put it in our AssetManager
-			Game::assets->AddTexture(tileset.getName(), tileset.getImagePath().c_str());
-			tilesetTextureCollection.insert(std::pair<uint32_t, std::string>(tileset.getFirstGID(), tileset.getName()));
+			if(tileset.getImagePath() != "")
+			{
+				// If the tileset has one composite image to pull from:
+				Game::assets->AddTexture(tileset.getName(), tileset.getImagePath().c_str());
+				tilesetTextureCollection.insert(std::pair<uint32_t, std::string>(tileset.getFirstGID(), tileset.getName()));
+			}
+			else
+			{
+				// if the tileset has a different image for each tile:
+				for (auto& tile : tileset.getTiles())
+				{
+					uint32_t tilesetTileId = tileset.getFirstGID() + tile.ID;
+					std::string assetName = tileset.getName() + "_" + std::to_string(tile.ID);
+					Game::assets->AddTexture(assetName, tile.imagePath.c_str());
+					tilesetTileTextureCollection.insert(std::pair<uint32_t, std::string>(tilesetTileId, assetName));
+				}
+			}
 
 			// Grab the tiles that have non-empty objectgroups
 			std::vector<tmx::Tileset::Tile> tsTiles;
@@ -56,9 +72,70 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 		{
 			if (layer->getType() != tmx::Layer::Type::Tile)
 			{
-				//skip none-tile layers (for now)
+				// MAP OBJECTS
+
+				if (layer->getType() == tmx::Layer::Type::Object)
+				{
+					auto* objectGroup = dynamic_cast<const tmx::ObjectGroup*>(layer.get());
+					auto& objects = objectGroup->getObjects();
+					for (auto& o : objects)
+					{
+						float x = o.getPosition().x * scaleFactor;
+						float y = o.getPosition().y * scaleFactor;
+						int w = 0;
+						int h = 0;
+						std::string assetId;
+						SDL_Texture* tex;
+						std::vector<TileCollider> tileColliders;
+
+						if (tilesetTileTextureCollection.contains(o.getTileID()))
+						{
+							assetId = tilesetTileTextureCollection[o.getTileID()];
+							
+						}
+						else {
+							auto currentGid = o.getTileID();
+
+							if (currentGid == 0)
+							{
+								//skip empty objects
+								continue;
+							}
+
+							auto tilesetGid = -1;
+							for (auto& ts : tilesetTextureCollection) {
+								if (ts.first <= currentGid) {
+									tilesetGid = ts.first;
+									break;
+								}
+							}
+
+							if (tilesetGid == -1) {
+								//skip if no tileset was found for the object
+								continue;
+							}
+
+							// Normalize the GID.
+							currentGid -= tilesetGid;
+							assetId = tilesetTextureCollection[tilesetGid];
+						}
+						
+						tex = Game::assets->GetTexture(assetId);
+						SDL_QueryTexture(tex, NULL, NULL, &w, &h);
+						
+						// Correct the y value
+						y -= h * scaleFactor;
+
+						// Draw the Object
+						
+						AddObject(x, y, assetId, static_cast<float>(w), static_cast<float>(h), scaleFactor, tileColliders, debug);
+
+					}
+				}
 				continue;
 			}
+
+			// REGULAR TILES
 
 			auto* tileLayer = dynamic_cast<const tmx::TileLayer*>(layer.get());
 			auto& tiles = tileLayer->getTiles();
@@ -164,7 +241,7 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 	}
 	else
 	{
-		//throw error?
+		// TODO decide what to do here: throw error?
 	}
 }
 
@@ -172,7 +249,43 @@ void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, std::string 
 {
 	auto& tile(manager.addEntity());
 	tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetAssetId, tileSize, scaleFactor);
-	tile.AddGroup(Game::groupMap);
+	tile.AddGroup(Game::groupMapTiles);
+	for (auto& c : colliders)
+	{
+		auto& box(manager.addEntity());
+		if (c.getColliderType() == Rectangle)
+		{
+			float boxX = x + c.getColliderRect().x * scaleFactor;
+			float boxY = y + c.getColliderRect().y * scaleFactor;
+			box.addComponent<TransformComponent>(boxX, boxY, c.getColliderRect().w, c.getColliderRect().h, scaleFactor);
+			box.addComponent<ColliderComponent>(c.getColliderTag(), ColliderType::AABB);
+
+			if (debug)
+			{
+				box.addComponent<SpriteComponent>("Placeholder", false);
+			}
+		}
+		else
+		{
+			float posX = x + c.getColliderPosition().x * scaleFactor;
+			float posY = y + c.getColliderPosition().y * scaleFactor;
+			box.addComponent<PolygonTransformComponent>(posX, posY, c.getColliderPoints(), scaleFactor, 0);
+			box.addComponent<ColliderComponent>(c.getColliderTag(), ColliderType::Polygon);
+
+			if (debug)
+			{
+				box.addComponent<PolygonLinesComponent>();
+			}
+		}
+	}
+}
+
+void TiledMapManager::AddObject(float x, float y, std::string objectAssetId, float objectWidth, float objectHeight, int scaleFactor, std::vector<TileCollider>& colliders, bool debug) const
+{
+	auto& mapObject(manager.addEntity());
+	mapObject.addComponent<TransformComponent>(x, y, objectWidth, objectHeight, scaleFactor);
+	mapObject.addComponent<SpriteComponent>(objectAssetId, false);
+	mapObject.AddGroup(Game::groupMapObjects);
 	for (auto& c : colliders)
 	{
 		auto& box(manager.addEntity());
