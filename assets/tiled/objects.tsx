@@ -4,7 +4,10 @@
  <tile id="4">
   <image width="128" height="128" source="objects/Ash-10.png"/>
   <objectgroup draworder="index" id="3">
-   <object id="2" type="ObjectCollision" x="57.6364" y="127.818">
+   <object id="2" type="ObjectCollision" x="57.6364" y="128">
+    <properties>
+     <property name="Use for Y-sorting" type="bool" value="true"/>
+    </properties>
     <polygon points="0,0 5.81818,-4.54545 5.63636,-8.72727 13.2727,-8.72727 13.6364,-5.27273 19.8182,0.181818"/>
    </object>
   </objectgroup>

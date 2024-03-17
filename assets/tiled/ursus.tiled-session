@@ -1,5 +1,5 @@
 {
-    "activeFile": "testmap.tmx",
+    "activeFile": "objects.tsx",
     "expandedProjectPaths": [
         "."
     ],
@@ -18,8 +18,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 485,
-                "y": 221
+                "x": 484,
+                "y": 220
             }
         }
     },
@@ -30,10 +30,11 @@
         "objects.tsx"
     ],
     "project": "ursus.tiled-project",
+    "property.type": "bool",
     "recentFiles": [
-        "objects.tsx",
+        "testmap.tmx",
         "map_tiles_sheet.tsx",
-        "testmap.tmx"
+        "objects.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.type": 1
