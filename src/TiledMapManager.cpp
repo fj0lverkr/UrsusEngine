@@ -86,49 +86,65 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 						int h = 0;
 						std::string assetId;
 						SDL_Texture* tex;
-						std::vector<TileCollider> tileColliders;
+						std::vector<tmx::Object> objectObjects;
+
+						auto currentGid = o.getTileID();
+
+						if (currentGid == 0)
+						{
+							//skip empty objects
+							continue;
+						}
+
+						auto tilesetGid = -1;
+						for (auto& ts : tilesetTextureCollection) {
+							if (ts.first <= currentGid) {
+								tilesetGid = ts.first;
+								break;
+							}
+						}
+
+						if (tilesetGid == -1) {
+							//skip if no tileset was found for the object
+							continue;
+						}
+
+						// Normalize the GID.
+						currentGid -= tilesetGid;
 
 						if (tilesetTileTextureCollection.contains(o.getTileID()))
 						{
 							assetId = tilesetTileTextureCollection[o.getTileID()];
-							
+
 						}
 						else {
-							auto currentGid = o.getTileID();
-
-							if (currentGid == 0)
-							{
-								//skip empty objects
-								continue;
-							}
-
-							auto tilesetGid = -1;
-							for (auto& ts : tilesetTextureCollection) {
-								if (ts.first <= currentGid) {
-									tilesetGid = ts.first;
-									break;
-								}
-							}
-
-							if (tilesetGid == -1) {
-								//skip if no tileset was found for the object
-								continue;
-							}
-
-							// Normalize the GID.
-							currentGid -= tilesetGid;
 							assetId = tilesetTextureCollection[tilesetGid];
 						}
+
+						// Get the Objects within the Object (i.e. the colliders)
+						std::vector<tmx::Tileset::Tile> specialTiles = tilesetSpecialTilesCollection[tilesetGid];
+						tmx::ObjectGroup currentTileObjectGroup;
+						for (auto& t : specialTiles)
+						{
+							if (t.ID == currentGid)
+							{
+								currentTileObjectGroup = t.objectGroup;
+							}
+						}
+						objectObjects = currentTileObjectGroup.getObjects();
 						
+						// Set the texture
 						tex = Game::assets->GetTexture(assetId);
 						SDL_QueryTexture(tex, NULL, NULL, &w, &h);
 						
 						// Correct the y value
 						y -= h * scaleFactor;
 
+						// Process objectObjects
+						std::vector<TileCollider> objectColliders = GetColliders(objectObjects);
+
 						// Draw the Object
-						
-						AddObject(x, y, assetId, static_cast<float>(w), static_cast<float>(h), scaleFactor, tileColliders, debug);
+						AddObject(x, y, assetId, static_cast<float>(w), static_cast<float>(h), scaleFactor, objectColliders, debug);
 
 					}
 				}
@@ -195,43 +211,8 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 					float posX = static_cast<float>(x * tileWidth * scaleFactor);
 					float posY = static_cast<float>(y * tileHeight * scaleFactor);
 
-
-
 					// Process TileObjects
-					std::vector<TileCollider> tileColliders;
-					for (auto& o : currentTileObjects)
-					{
-						// Object should be of class TileCollision in Tiled to be recognized as a tile collision object,
-						// we can expand this to a switch statement when/if needed.
-						if (o.getClass() == "TileCollision")
-						{
-							auto& tag = o.getName() == "" ? o.getClass() : o.getName();
-							if (o.getShape() == tmx::Object::Shape::Ellipse || o.getShape() == tmx::Object::Shape::Rectangle)
-							{
-								//use getAABB() to get the bounding box for the object
-								auto& aabb = o.getAABB();
-								SDL_FRect r{};
-								r.x = aabb.left;
-								r.y = aabb.top;
-								r.w = aabb.width;
-								r.h = aabb.height;
-								tileColliders.emplace_back(TileCollider {r, tag});
-							}
-							else
-							{
-								std::vector<SDL_FPoint> tileColliderPoints = {};
-								//use getPoints() the get a vector of points to draw a more complex shape
-								//this means we need to add a different type of ColliderComponent as the regular one takes an SDL_Rect for the shape.
-								for (auto& p : o.getPoints())
-								{
-									SDL_FPoint point = { p.x, p.y };
-									tileColliderPoints.emplace_back(point);
-								}
-								tileColliders.emplace_back(TileCollider{ o.getPosition().x, o.getPosition().y, tileColliderPoints, tag });
-							}
-						}
-						
-					}
+					std::vector<TileCollider> tileColliders = GetColliders(currentTileObjects);
 
 					// Draw the Tile
 					AddTile(srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid], tileWidth, scaleFactor, tileColliders, debug);
@@ -243,6 +224,44 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 	{
 		// TODO decide what to do here: throw error?
 	}
+}
+
+std::vector<TileCollider> TiledMapManager::GetColliders(std::vector<tmx::Object>& tileObjects)
+{
+	std::vector<TileCollider> tileColliders;
+	for (auto& o : tileObjects)
+	{
+		// Object should be of class TileCollision in Tiled to be recognized as a tile collision object,
+		// we can expand this to a switch statement when/if needed.
+		if (o.getClass() == "TileCollision")
+		{
+			auto& tag = o.getName() == "" ? o.getClass() : o.getName();
+			if (o.getShape() == tmx::Object::Shape::Ellipse || o.getShape() == tmx::Object::Shape::Rectangle)
+			{
+				//use getAABB() to get the bounding box for the object
+				auto& aabb = o.getAABB();
+				SDL_FRect r{};
+				r.x = aabb.left;
+				r.y = aabb.top;
+				r.w = aabb.width;
+				r.h = aabb.height;
+				tileColliders.emplace_back(TileCollider{ r, tag });
+			}
+			else
+			{
+				std::vector<SDL_FPoint> tileColliderPoints = {};
+				//use getPoints() the get a vector of points to draw a more complex shape
+				//this means we need to add a different type of ColliderComponent as the regular one takes an SDL_Rect for the shape.
+				for (auto& p : o.getPoints())
+				{
+					SDL_FPoint point = { p.x, p.y };
+					tileColliderPoints.emplace_back(point);
+				}
+				tileColliders.emplace_back(TileCollider{ o.getPosition().x, o.getPosition().y, tileColliderPoints, tag });
+			}
+		}
+	}
+	return tileColliders;
 }
 
 void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, std::string tilesetAssetId, int tileSize, int scaleFactor, std::vector<TileCollider> &colliders, bool debug) const
