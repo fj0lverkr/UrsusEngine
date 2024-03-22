@@ -109,17 +109,18 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 							continue;
 						}
 
-						// Normalize the GID.
-						currentGid -= tilesetGid;
-
 						if (tilesetTileTextureCollection.contains(o.getTileID()))
 						{
 							assetId = tilesetTileTextureCollection[o.getTileID()];
+							tilesetGid = o.getTileID()/100 * 100 + 1;
 
 						}
 						else {
 							assetId = tilesetTextureCollection[tilesetGid];
 						}
+
+						// Normalize the GID.
+						currentGid -= tilesetGid;
 
 						// Get the Objects within the Object (i.e. the colliders)
 						std::vector<tmx::Tileset::Tile> specialTiles = tilesetSpecialTilesCollection[tilesetGid];
@@ -233,7 +234,7 @@ std::vector<TileCollider> TiledMapManager::GetColliders(std::vector<tmx::Object>
 	{
 		// Object should be of class TileCollision in Tiled to be recognized as a tile collision object,
 		// we can expand this to a switch statement when/if needed.
-		if (o.getClass() == "TileCollision")
+		if (o.getClass() == "TileCollision" || o.getClass() == "ObjectCollision")
 		{
 			auto& tag = o.getName() == "" ? o.getClass() : o.getName();
 			if (o.getShape() == tmx::Object::Shape::Ellipse || o.getShape() == tmx::Object::Shape::Rectangle)
