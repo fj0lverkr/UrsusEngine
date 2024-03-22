@@ -308,9 +308,9 @@ void TiledMapManager::AddObject(float x, float y, std::string objectAssetId, flo
 	mapObject.AddGroup(Game::groupMapObjects);
 	for (auto& c : colliders)
 	{
-		auto& box(manager.addEntity());
 		if (c.getColliderType() == Rectangle)
 		{
+			auto& box(manager.addEntity());
 			float boxX = x + c.getColliderRect().x * scaleFactor;
 			float boxY = y + c.getColliderRect().y * scaleFactor;
 			box.addComponent<TransformComponent>(boxX, boxY, c.getColliderRect().w, c.getColliderRect().h, scaleFactor);
@@ -325,12 +325,12 @@ void TiledMapManager::AddObject(float x, float y, std::string objectAssetId, flo
 		{
 			float posX = x + c.getColliderPosition().x * scaleFactor;
 			float posY = y + c.getColliderPosition().y * scaleFactor;
-			box.addComponent<PolygonTransformComponent>(posX, posY, c.getColliderPoints(), scaleFactor, 0);
-			box.addComponent<ColliderComponent>(c.getColliderTag(), ColliderType::Polygon);
+			mapObject.addComponent<PolygonTransformComponent>(posX, posY, c.getColliderPoints(), scaleFactor, 0);
+			mapObject.addComponent<ColliderComponent>(c.getColliderTag(), ColliderType::Polygon);
 
 			if (debug)
 			{
-				box.addComponent<PolygonLinesComponent>();
+				mapObject.addComponent<PolygonLinesComponent>();
 			}
 		}
 	}

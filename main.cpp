@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     const char *WINDOWTITLE = "Ursus Engine";
     const int WINDOWW = 960;
     const int WINDOWH = 640;
+    const int SCALEFACTOR = 2;
     const SDL_Color WINDOWBG = {255, 255, 255, 255};
 
     Uint64 frameStart;
@@ -25,7 +26,7 @@ int main(int argc, char *argv[])
     int fps = 0;
 
     game = new Game();
-    game->init(WINDOWTITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOWW, WINDOWH, false, WINDOWBG, DEBUG);
+    game->init(WINDOWTITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOWW, WINDOWH, SCALEFACTOR, false, WINDOWBG, DEBUG);
     while (game->isRunning)
     {
         frameStart = SDL_GetTicks64();
