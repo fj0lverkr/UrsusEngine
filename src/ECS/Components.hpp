@@ -9,6 +9,7 @@
 #include "ColliderComponent.hpp"
 #include "TileComponent.hpp"
 #include "AnchorComponent.hpp"
+#include "YSortingComponent.hpp"
 
 // UI Components
 #include "UI/UILabel.hpp"

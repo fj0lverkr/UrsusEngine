@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <map>
 #include <SDL2/SDL.h>
 
 #include "EventSystem/EventReceiver.hpp"
@@ -78,6 +79,7 @@ private:
     ComponentArray componentArray = {};
     ComponentBitset componentBitset;
     GroupBitset groupBitset;
+    std::map<std::string, float> ySortValues = { {"MIN", -1.0f}, {"MAX", -1.0f} };
 
 public:
     Entity(Manager &mMananger) : manager(mMananger) {}
@@ -105,7 +107,7 @@ public:
 
     void AddGroup(Group mGroup);
 
-    void delGroup(Group mGroup)
+    void DelGroup(Group mGroup)
     {
         groupBitset[mGroup] = false;
     }
@@ -136,6 +138,27 @@ public:
     {
         auto ptr(componentArray[getComponentTypeId<T>()]);
         return *static_cast<T *>(ptr);
+    }
+
+    std::map<std::string, float> GetYSortValue() const
+    {
+        return ySortValues;
+    }
+
+    void SetMinYSortValue(float ySortVal)
+    {
+        ySortValues["MIN"] = ySortVal;
+    }
+
+    void SetMaxYSortValue(float ySortVal)
+    {
+        ySortValues["MAX"] = ySortVal;
+    }
+
+    void SetYSortValues(float MinYSortVal, float MaxYSortVal)
+    {
+        ySortValues["MIN"] = MinYSortVal;
+        ySortValues["MAX"] = MaxYSortVal;
     }
 };
 

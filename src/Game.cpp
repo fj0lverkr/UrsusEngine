@@ -76,19 +76,16 @@ bool Game::ysortEntities(Entity *e1, Entity *e2)
         }
         else {
             std::vector<SDL_FPoint> colliderPoints = collider.colliderPoints;
-            e2MinY = e2MaxY = colliderPoints[0].y - Game::camera.GetViewFinder().y;
+            e2MinY = e2MaxY = colliderPoints[0].y;
             for (auto& p : colliderPoints)
             {
-                e2MinY = p.y - Game::camera.GetViewFinder().y < e2MinY ? p.y - Game::camera.GetViewFinder().y : e2MinY;
-                e2MaxY = p.y - Game::camera.GetViewFinder().y > e2MaxY ? p.y - Game::camera.GetViewFinder().y : e2MaxY;
+                e2MinY = p.y < e2MinY ? p.y : e2MinY;
+                e2MaxY = p.y > e2MaxY ? p.y : e2MaxY;
             }
         }
     }
 
-    if(e1MinY >= e2MaxY && e1MaxY >= e2MinY)
-        return true;
-    if (e1MinY < e2MaxY || e1MaxY < e2MinY)
-        return false;
+    return (e2MinY < e1MaxY);
 }
 
 void Game::init(const char *title, int xpos, int ypos, int width, int height, int scaleFactor, bool fullscreen, SDL_Color rendererColor, bool debug)
@@ -229,7 +226,7 @@ void Game::render()
     }
 
     // TODO sort the ysortables by the y values of their colliders (player anchor, enemy achor, object collider) and draw them in that order
-    std::sort(ysortables.begin(), ysortables.end(), ysortEntities);
+    std::sort(ysortables.begin(), ysortables.end(), Game::ysortEntities);
     for (auto &d : ysortables)
     {
         d->draw();
