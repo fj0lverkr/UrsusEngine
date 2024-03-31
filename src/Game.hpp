@@ -22,7 +22,6 @@ private:
     SDL_Window* window;
     int cnt = 0;
     int windowWidth, windowHeight;
-    static bool ysortEntities(Entity *e1, Entity *e2);
 
 public:
     Game();

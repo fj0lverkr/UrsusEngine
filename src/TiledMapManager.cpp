@@ -334,4 +334,5 @@ void TiledMapManager::AddObject(float x, float y, std::string objectAssetId, flo
 			}
 		}
 	}
+	mapObject.addComponent<YsortingComponent>();
 }

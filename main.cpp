@@ -5,7 +5,7 @@ Game *game = nullptr;
 int main(int argc, char *argv[])
 {
     // Debug
-    const bool DEBUG = true;
+    const bool DEBUG = false;
 
     // Framerate settings
     const Uint64 TARGETFPS = 60;

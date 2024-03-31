@@ -145,6 +145,19 @@ public:
         return ySortValues;
     }
 
+    float GetYSortValue(std::string minOrMax)
+    {
+        std::transform(minOrMax.begin(), minOrMax.end(), minOrMax.begin(), ::toupper);
+        if(ySortValues.contains(minOrMax))
+        {
+            return ySortValues[minOrMax];
+        }
+        else {
+            return -1.0f;
+        }
+        
+    }
+
     void SetMinYSortValue(float ySortVal)
     {
         ySortValues["MIN"] = ySortVal;

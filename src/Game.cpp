@@ -35,58 +35,17 @@ Game::~Game()
 {
 }
 
-bool Game::ysortEntities(Entity *e1, Entity *e2)
+struct
 {
-    // Function to sort the vector containing the y-sortable entities
-    float e1MinY, e1MaxY, e2MinY, e2MaxY;
-    e1MinY = e1MaxY =  e2MinY = e2MaxY = -1.0f;
-
-    if (e1->hasComponent<AnchorComponent>()) {
-        auto& anchor = e1->GetComponent<AnchorComponent>();
-        e1MinY = e1MaxY = anchor.transform->position.y;
+    bool operator()(Entity *e1, Entity *e2) const
+    {
+        // TODO check to see if we can improve this.
+        float e1Min = e1->GetYSortValue("MIN");
+        float e2Min = e2->GetYSortValue("MIN");
+        return (e1Min < e2Min);
     }
-    else if (e1->hasComponent<ColliderComponent>()) {
-        auto& collider = e1->GetComponent<ColliderComponent>();
-        if (collider.getType() == ColliderType::AABB)
-        {
-            e1MinY = collider.transform->position.y;
-            e1MaxY = e1MinY + collider.transform->height;
-        }
-        else {
-            std::vector<SDL_FPoint> colliderPoints = collider.colliderPoints;
-            e1MinY = e1MaxY = colliderPoints[0].y;
-            for (auto& p : colliderPoints)
-            {
-                e1MinY = p.y < e1MinY ? p.y : e1MinY;
-                e1MaxY = p.y > e1MaxY ? p.y : e1MaxY;
-            }
-        }
-    }
-
-    if (e2->hasComponent<AnchorComponent>()) {
-        auto& anchor = e2->GetComponent<AnchorComponent>();
-        e2MinY = e2MaxY = anchor.transform->position.y;
-    }
-    else if (e2->hasComponent<ColliderComponent>()) {
-        auto& collider = e2->GetComponent<ColliderComponent>();
-        if (collider.getType() == ColliderType::AABB)
-        {
-            e2MinY = collider.transform->position.y;
-            e2MaxY = e2MinY + collider.transform->height;
-        }
-        else {
-            std::vector<SDL_FPoint> colliderPoints = collider.colliderPoints;
-            e2MinY = e2MaxY = colliderPoints[0].y;
-            for (auto& p : colliderPoints)
-            {
-                e2MinY = p.y < e2MinY ? p.y : e2MinY;
-                e2MaxY = p.y > e2MaxY ? p.y : e2MaxY;
-            }
-        }
-    }
-
-    return (e2MinY < e1MaxY);
 }
+ysortEntities;
 
 void Game::init(const char *title, int xpos, int ypos, int width, int height, int scaleFactor, bool fullscreen, SDL_Color rendererColor, bool debug)
 {
@@ -148,11 +107,12 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, in
     player.addComponent<ColliderComponent>("player", ColliderType::AABB);
     player.addComponent<AnchorComponent>("playerAnchor", AnchorComponent::AnchorBottom, 0.0f, 2.0f, isDebug);
     player.addComponent<KeyboardController>();
+    player.addComponent<YsortingComponent>();
 
     keyboardController = player.GetComponent<KeyboardController>();
 
     debugHud.addComponent<TransformComponent>(10.0f, 10.0f);
-    debugHud.addComponent<UILabel>("Test", "Swansea_16");
+    debugHud.addComponent<UILabel>("init", "Swansea_16");
 
     debugLabel = &debugHud.GetComponent<UILabel>();
 }
@@ -170,7 +130,7 @@ void Game::update(int fps) const
 
     if (isDebug)
     {
-        ss << "Player: " << player.GetComponent<TransformComponent>().position << " | FPS: " << fps;
+        ss << "Player: " << player.GetComponent<AnchorComponent>().collider.x << " x, " << player.GetComponent<AnchorComponent>().collider.y << " y " << " | FPS: " << fps;
         debugLabel->setLabelText(ss.str());
     }
 
@@ -201,6 +161,19 @@ void Game::update(int fps) const
         }
     }
 
+    // IN the future we will handle collision with mapobjects differently (e.g. some objects might be pushable)
+    for (auto& o : mapObjects)
+    {
+        if (Collision::AABB(o->GetComponent<ColliderComponent>(), player.GetComponent<AnchorComponent>()))
+        {
+            player.GetComponent<TransformComponent>().position = playerPos;
+        }
+        if (Collision::PointCollision(o->GetComponent<ColliderComponent>(), player.GetComponent<AnchorComponent>()))
+        {
+            player.GetComponent<TransformComponent>().position = playerPos;
+        }
+    }
+
     camera.follow(player.GetComponent<TransformComponent>().position, windowWidth, windowHeight);
 }
 
@@ -208,10 +181,20 @@ void Game::render()
 {
     SDL_RenderClear(renderer);
     ysortables.clear();
+
     for (auto &t : mapTiles)
     {
         t->draw();
     }
+
+    if (isDebug)
+    {
+        for (auto& c : colliders)
+        {
+            c->draw();
+        }
+    }
+
     for (auto &o : mapObjects)
     {
         ysortables.emplace_back(o);
@@ -225,24 +208,17 @@ void Game::render()
         ysortables.emplace_back(e);
     }
 
-    // TODO sort the ysortables by the y values of their colliders (player anchor, enemy achor, object collider) and draw them in that order
-    std::sort(ysortables.begin(), ysortables.end(), Game::ysortEntities);
+    std::sort(ysortables.begin(), ysortables.end(), ysortEntities);
     for (auto &d : ysortables)
     {
         d->draw();
     }
 
-    if (isDebug)
-    {
-        for (auto &c : colliders)
-        {
-            c->draw();
-        }
-    }
     for (auto &ui : uiElements)
     {
         ui->draw();
     }
+
     SDL_RenderPresent(renderer);
 }
 

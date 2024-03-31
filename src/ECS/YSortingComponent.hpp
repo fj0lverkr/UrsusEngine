@@ -1,12 +1,13 @@
 #pragma once
-#include "ECS.hpp"
+#include <vector>
+#include <SDL2/SDL.h>
 #include "Components.hpp"
 
 class YsortingComponent : public Component
 {
 private:
 	AnchorComponent* anchor = nullptr;
-	ColliderComponent* collider = nullptr;
+	ColliderComponent* shape = nullptr;
 
 public:
 	YsortingComponent() {};
@@ -20,7 +21,7 @@ public:
 		}
 		if (entity->hasComponent<ColliderComponent>())
 		{
-			collider = &entity->GetComponent<ColliderComponent>();
+			shape = &entity->GetComponent<ColliderComponent>();
 		}
 	}
 
@@ -28,19 +29,32 @@ public:
 	{
 		if (anchor != nullptr)
 		{
-			entity->SetYSortValues(anchor->transform->position.y, anchor->transform->position.y);
+			entity->SetYSortValues(anchor->collider.y, anchor->collider.y);
 		}
-		else if (collider != nullptr)
+		else if (shape != nullptr)
 		{
-			switch (collider->getType())
+			std::vector<SDL_FPoint> colliderPoints = shape->colliderPoints;
+			float minY, maxY;
+			minY = maxY = -1.0f;
+			switch (shape->getType())
 			{
-			case ColliderType::AABB:
+			case AABB:
+				minY = shape->collider.y;
+				maxY = minY + shape->collider.h;
 				break;
-			case ColliderType::Polygon:
+			case Polygon:
+				minY = maxY = colliderPoints[0].y;
+				for (auto& p : colliderPoints)
+				{
+					minY = p.y < minY ? p.y : minY;
+					maxY = p.y > maxY ? p.y : maxY;
+				}
 				break;
 			default:
 				break;
 			}
+
+			entity->SetYSortValues(minY, maxY);
 		}
 	}
 };
