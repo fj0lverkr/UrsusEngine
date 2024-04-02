@@ -15,11 +15,11 @@
             "scaleInEditor": 1
         },
         "testmap.tmx": {
-            "scale": 3,
+            "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 207.66666666666666,
-                "y": 272.3333333333333
+                "x": 477,
+                "y": 317
             }
         }
     },
@@ -30,6 +30,7 @@
         "objects.tsx"
     ],
     "project": "ursus.tiled-project",
+    "property.type": "bool",
     "recentFiles": [
         "objects.tsx",
         "map_tiles_sheet.tsx",

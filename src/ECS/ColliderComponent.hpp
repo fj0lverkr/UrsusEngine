@@ -63,7 +63,8 @@ public:
         boost::uuids::uuid id = gen();
         this->uuid = boost::uuids::to_string(id);
 
-        if (!entity->hasGroup(Game::groupColliders) && !entity->hasGroup(Game::groupPlayers) && !entity->hasGroup(Game::groupEnemies))
+        // Some entities will be handles differently from other more generic colliders, they should not be in the same group.
+        if (!entity->hasGroup(Game::groupColliders) && !entity->hasGroup(Game::groupPlayers) && !entity->hasGroup(Game::groupEnemies) && !entity->hasGroup(Game::groupMapObjects))
         {
             entity->AddGroup(Game::groupColliders);
         }

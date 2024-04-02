@@ -161,6 +161,7 @@
     <ClInclude Include="src\ecs\TileComponent.hpp" />
     <ClInclude Include="src\ecs\TransformComponent.hpp" />
     <ClInclude Include="src\ECS\UI\UILabel.hpp" />
+    <ClInclude Include="src\ECS\YSortingComponent.hpp" />
     <ClInclude Include="src\Game.hpp" />
     <ClInclude Include="src\TextureManager.hpp" />
     <ClInclude Include="src\TileCollider.hpp" />
