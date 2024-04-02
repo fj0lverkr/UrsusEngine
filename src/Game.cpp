@@ -88,7 +88,7 @@ void Game::init(const char *title, int xpos, int ypos, int width, int height, in
     Game::assets->AddTexture("Placeholder", "assets/placeholder.png");
     Game::assets->AddFont("Swansea_16", "assets/fonts/Swansea.ttf", 16);
 
-    mapManager.LoadMap("testmap", scaleFactor, true);
+    mapManager.LoadMap("testmap", scaleFactor, debug);
 
     player.AddGroup(groupPlayers);
     debugHud.AddGroup(groupUI);
