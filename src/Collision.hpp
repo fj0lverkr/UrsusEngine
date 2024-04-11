@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "SDL2/SDL.h"
-
+#include "ECS/Components.hpp"
 /*
 Collision Types:
     Axis-Aligned Bounding Box Collider (AABB)
@@ -11,9 +11,6 @@ Collision Types:
         A.y + A.h >= B.y &&
         B.y + B.h >= A.y
 */
-
-class ColliderComponent;
-class AnchorComponent;
 
 class Collision
 {

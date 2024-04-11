@@ -11,10 +11,12 @@
 class TiledMapManager
 {
 private:
+	std::vector<TileCollider> GetColliders(std::vector<tmx::Object>& tileObjects);
 	void AddTile(int srcX, int srcY, float x, float y, std::string tilesetAssetId, int tileSize, int scaleFactor, std::vector<TileCollider> &colliders, bool debug) const;
+	void AddObject(float x, float y, std::string tilesetAssetId, float objectWidth, float objectHeight, int scaleFactor, std::vector<TileCollider>& colliders, bool debug) const;
 
 public:
 	TiledMapManager();
 	~TiledMapManager();
-	void loadMap(std::string mapAssetId, int scaleFactor = 0, bool debug = false);
+	void LoadMap(std::string mapAssetId, int scaleFactor = 0, bool debug = false);
 };

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="1">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="4">
  <tileset firstgid="1" source="map_tiles_sheet.tsx"/>
+ <tileset firstgid="101" source="objects.tsx"/>
  <layer id="1" name="tiles" width="30" height="20">
   <data encoding="csv">
 21,21,21,21,21,21,36,37,38,40,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,
@@ -25,6 +26,10 @@
 21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21,21
 </data>
  </layer>
+ <objectgroup id="3" name="Objects">
+  <object id="2" gid="105" x="111.333" y="370.667" width="128" height="128"/>
+  <object id="3" gid="105" x="174" y="343" width="128" height="128"/>
+ </objectgroup>
  <layer id="2" name="colliders" width="30" height="20">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

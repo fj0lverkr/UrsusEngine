@@ -8,6 +8,28 @@
    </object>
   </objectgroup>
  </tile>
+ <tile id="31">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="TileCollision" x="0" y="30" width="32" height="2"/>
+  </objectgroup>
+ </tile>
+ <tile id="32">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="TileCollision" x="0" y="30" width="32" height="2"/>
+  </objectgroup>
+ </tile>
+ <tile id="33">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="TileCollision" x="0" y="30" width="32" height="2"/>
+  </objectgroup>
+ </tile>
+ <tile id="34">
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="TileCollision" x="0" y="28.3636">
+    <polygon points="0,0 1.72727,0.0909091 2,0.727273 11.6364,0.727273 11.8182,1.63636 15.9091,1.72727 16.1818,0.727273 23.4545,0.727273 23.8182,1.90909 26.3636,1.81818 29.2727,-0.181818 29.2727,-4 30.3636,-4.45455 30.2727,-9.90909 28.2727,-10.7273 28.0909,-12 30.0909,-13.2727 30.2727,-20.4545 29.4545,-21.0909 29.3636,-21.7273 30.2727,-22.6364 30.0909,-28.2727 31.7273,-28.1818 31.6364,2.81818 29.0909,3.09091 8.18182,3.18182 0.181818,3.18182"/>
+   </object>
+  </objectgroup>
+ </tile>
  <tile id="35">
   <objectgroup draworder="index" id="2">
    <object id="1" type="TileCollision" x="0" y="0" width="32" height="2"/>
