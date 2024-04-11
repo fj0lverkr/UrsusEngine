@@ -80,6 +80,7 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 					auto& objects = objectGroup->getObjects();
 					for (auto& o : objects)
 					{
+						bool shouldYSort = false;
 						float x = o.getPosition().x * scaleFactor;
 						float y = o.getPosition().y * scaleFactor;
 						int w = 0;
@@ -125,14 +126,25 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 						// Get the Objects within the Object (i.e. the colliders)
 						std::vector<tmx::Tileset::Tile> specialTiles = tilesetSpecialTilesCollection[tilesetGid];
 						tmx::ObjectGroup currentTileObjectGroup;
+						std::vector<tmx::Property> objectProps;
+						
 						for (auto& t : specialTiles)
 						{
 							if (t.ID == currentGid)
 							{
 								currentTileObjectGroup = t.objectGroup;
+								objectProps = t.properties;
 							}
 						}
 						objectObjects = currentTileObjectGroup.getObjects();
+						
+						for (auto& p : objectProps)
+						{
+							if (p.getName() == "Ysorting")
+							{
+								shouldYSort = p.getBoolValue();
+							}
+						}
 						
 						// Set the texture
 						tex = Game::assets->GetTexture(assetId);
@@ -145,7 +157,7 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 						std::vector<TileCollider> objectColliders = GetColliders(objectObjects);
 
 						// Draw the Object
-						AddObject(x, y, assetId, static_cast<float>(w), static_cast<float>(h), scaleFactor, objectColliders, debug);
+						AddObject(x, y, assetId, static_cast<float>(w), static_cast<float>(h), scaleFactor, objectColliders, shouldYSort, debug);
 
 					}
 				}
@@ -300,7 +312,7 @@ void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, std::string 
 	}
 }
 
-void TiledMapManager::AddObject(float x, float y, std::string objectAssetId, float objectWidth, float objectHeight, int scaleFactor, std::vector<TileCollider>& colliders, bool debug) const
+void TiledMapManager::AddObject(float x, float y, std::string objectAssetId, float objectWidth, float objectHeight, int scaleFactor, std::vector<TileCollider>& colliders, bool shoudlYSort, bool debug) const
 {
 	auto& mapObject(manager.addEntity());
 	mapObject.addComponent<TransformComponent>(x, y, objectWidth, objectHeight, scaleFactor);
@@ -334,5 +346,9 @@ void TiledMapManager::AddObject(float x, float y, std::string objectAssetId, flo
 			}
 		}
 	}
-	mapObject.addComponent<YsortingComponent>();
+	if (shoudlYSort)
+	{
+		mapObject.addComponent<YsortingComponent>();
+	}
+
 }
