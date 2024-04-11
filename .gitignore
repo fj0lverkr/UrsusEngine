@@ -6,3 +6,6 @@ x64/
 /.vs/VSWorkspaceState.json
 /.vs/slnx.sqlite-journal
 /.vs/ProjectSettings.json
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
