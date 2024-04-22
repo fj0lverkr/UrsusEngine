@@ -1,5 +1,5 @@
 {
-    "activeFile": "objects.tsx",
+    "activeFile": "map_tiles_sheet.tsx",
     "expandedProjectPaths": [
         "."
     ],
@@ -23,6 +23,7 @@
             }
         }
     },
+    "frame.defaultDuration": 250,
     "last.imagePath": "C:/Users/nilsn/source/repos/fj0lverkr/UrsusEngine/assets/tiled/objects",
     "openFiles": [
         "testmap.tmx",
@@ -33,8 +34,8 @@
     "property.type": "bool",
     "recentFiles": [
         "testmap.tmx",
-        "map_tiles_sheet.tsx",
-        "objects.tsx"
+        "objects.tsx",
+        "map_tiles_sheet.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.type": 1

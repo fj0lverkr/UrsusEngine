@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.10.2" name="map_tiles_sheet" tilewidth="32" tileheight="32" tilecount="100" columns="10">
  <image source="map_tiles_sheet.png" width="320" height="320"/>
+ <tile id="24">
+  <animation>
+   <frame tileid="20" duration="250"/>
+   <frame tileid="21" duration="250"/>
+   <frame tileid="22" duration="250"/>
+   <frame tileid="23" duration="250"/>
+  </animation>
+ </tile>
  <tile id="30">
   <objectgroup draworder="index" id="3">
    <object id="15" type="TileCollision" x="2.4375" y="0">
