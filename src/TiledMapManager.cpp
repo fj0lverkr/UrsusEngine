@@ -19,6 +19,7 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 	std::map<uint32_t, std::string> tilesetTextureCollection;
 	std::map<uint32_t, std::string> tilesetTileTextureCollection;
 	std::map<uint32_t, const std::vector<tmx::Tileset::Tile>> tilesetSpecialTilesCollection;
+	std::map<uint32_t, const std::vector<tmx::Tileset::Tile>> tilesetAnimatedTilesCollection;
 
 	if (Game::assets->LoadtiledMap(mapAssetId, &map))
 	{
@@ -64,6 +65,17 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 				}
 			}
 			tilesetSpecialTilesCollection.insert(std::pair<uint32_t, const std::vector<tmx::Tileset::Tile>>(tileset.getFirstGID(), tsTiles));
+
+			// Grab the animated tiles
+			tsTiles.clear();
+			for (auto& t : tileset.getTiles())
+			{
+				if (!t.animation.frames.empty())
+				{
+					tsTiles.emplace_back(t);
+				}
+			}
+			tilesetAnimatedTilesCollection.insert(std::pair<uint32_t, const std::vector<tmx::Tileset::Tile>>(tileset.getFirstGID(), tsTiles));
 		}
 
 		//get layers
