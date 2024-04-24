@@ -4,6 +4,8 @@
 
 extern Manager manager;
 
+using namespace std;
+
 TiledMapManager::TiledMapManager()
 {
 }
@@ -12,75 +14,74 @@ TiledMapManager::~TiledMapManager()
 {
 }
 
-void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debug)
+void TiledMapManager::LoadMap(string mapAssetId, int scaleFactor, bool debug)
 {
 	scaleFactor = scaleFactor < 1 ? 1 : scaleFactor;
-	tmx::Map map;
-	std::map<uint32_t, std::string> tilesetTextureCollection;
-	std::map<uint32_t, std::string> tilesetTileTextureCollection;
-	std::map<uint32_t, const std::vector<tmx::Tileset::Tile>> tilesetSpecialTilesCollection;
-	std::map<uint32_t, const std::vector<tmx::Tileset::Tile>> tilesetAnimatedTilesCollection;
+	tmx::Map tiledMap;
+	map<uint32_t, string> tilesetTextureCollection;
+	map<uint32_t, string> tilesetTileTextureCollection;
+	map<uint32_t, const vector<tmx::Tileset::Tile>> tilesetSpecialTilesCollection;
+	map<uint32_t, const vector<tmx::Tileset::Tile>> tilesetAnimatedTilesCollection;
 
-	if (Game::assets->LoadtiledMap(mapAssetId, &map))
+	if (Game::assets->LoadtiledMap(mapAssetId, &tiledMap))
 	{
 		//get dimensions
-		auto& mapDimensions = map.getTileCount();
+		const tmx::Vector2u& mapDimensions = tiledMap.getTileCount();
 		int cols = mapDimensions.x;
 		int rows = mapDimensions.y;
 
-		auto& tileSize = map.getTileSize();
+		const tmx::Vector2u& tileSize = tiledMap.getTileSize();
 		int tileWidth = tileSize.x;
 		int tileHeight = tileSize.y;
 
 		//get tilesets
-		auto& tilesets = map.getTilesets();
-		for (auto& tileset : tilesets)
+		const vector<tmx::Tileset>& tilesets = tiledMap.getTilesets();
+		for (const tmx::Tileset& tileset : tilesets)
 		{
 			// Grab the associated image and put it in our AssetManager
 			if(tileset.getImagePath() != "")
 			{
 				// If the tileset has one composite image to pull from:
 				Game::assets->AddTexture(tileset.getName(), tileset.getImagePath().c_str());
-				tilesetTextureCollection.insert(std::pair<uint32_t, std::string>(tileset.getFirstGID(), tileset.getName()));
+				tilesetTextureCollection.insert(pair<uint32_t, string>(tileset.getFirstGID(), tileset.getName()));
 			}
 			else
 			{
 				// if the tileset has a different image for each tile:
-				for (auto& tile : tileset.getTiles())
+				for (const tmx::Tileset::Tile& tile : tileset.getTiles())
 				{
 					uint32_t tilesetTileId = tileset.getFirstGID() + tile.ID;
-					std::string assetName = tileset.getName() + "_" + std::to_string(tile.ID);
+					string assetName = tileset.getName() + "_" + to_string(tile.ID);
 					Game::assets->AddTexture(assetName, tile.imagePath.c_str());
-					tilesetTileTextureCollection.insert(std::pair<uint32_t, std::string>(tilesetTileId, assetName));
+					tilesetTileTextureCollection.insert(pair<uint32_t, string>(tilesetTileId, assetName));
 				}
 			}
 
-			// Grab the tiles that have non-empty objectgroups
-			std::vector<tmx::Tileset::Tile> tsTiles;
-			for (auto& t : tileset.getTiles())
+			// Grab the tiles that have non-empty objectgroups and/or have frames
+			vector<tmx::Tileset::Tile> tsTilesWithObjects;
+			vector<tmx::Tileset::Tile> tsTilesWithFrames;
+			for (const tmx::Tileset::Tile& t : tileset.getTiles())
 			{
 				if (!t.objectGroup.getObjects().empty())
 				{
-					tsTiles.emplace_back(t);
+					tsTilesWithObjects.emplace_back(t);
 				}
-			}
-			tilesetSpecialTilesCollection.insert(std::pair<uint32_t, const std::vector<tmx::Tileset::Tile>>(tileset.getFirstGID(), tsTiles));
-
-			// Grab the animated tiles
-			tsTiles.clear();
-			for (auto& t : tileset.getTiles())
-			{
 				if (!t.animation.frames.empty())
 				{
-					tsTiles.emplace_back(t);
+					tsTilesWithFrames.emplace_back(t);
 				}
 			}
-			tilesetAnimatedTilesCollection.insert(std::pair<uint32_t, const std::vector<tmx::Tileset::Tile>>(tileset.getFirstGID(), tsTiles));
+			tilesetSpecialTilesCollection.insert(pair<uint32_t, const vector<tmx::Tileset::Tile>>(tileset.getFirstGID(), tsTilesWithObjects));
+			tilesetAnimatedTilesCollection.insert(pair<uint32_t, const vector<tmx::Tileset::Tile>>(tileset.getFirstGID(), tsTilesWithFrames));
+
+			// cleanup these vectors
+			vector<tmx::Tileset::Tile>().swap(tsTilesWithObjects);
+			vector<tmx::Tileset::Tile>().swap(tsTilesWithFrames);
 		}
 
 		//get layers
-		auto& layers = map.getLayers();
-		for (auto& layer : layers)
+		const vector<tmx::Layer::Ptr>& layers = tiledMap.getLayers();
+		for (const tmx::Layer::Ptr& layer : layers)
 		{
 			if (layer->getType() != tmx::Layer::Type::Tile)
 			{
@@ -97,11 +98,11 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 						float y = o.getPosition().y * scaleFactor;
 						int w = 0;
 						int h = 0;
-						std::string assetId;
+						string assetId;
 						SDL_Texture* tex;
-						std::vector<tmx::Object> objectObjects;
+						vector<tmx::Object> objectObjects;
 
-						auto currentGid = o.getTileID();
+						uint32_t currentGid = o.getTileID();
 
 						if (currentGid == 0)
 						{
@@ -110,7 +111,7 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 						}
 
 						auto tilesetGid = -1;
-						for (auto& ts : tilesetTextureCollection) {
+						for (pair<const uint32_t, string>& ts : tilesetTextureCollection) {
 							if (ts.first <= currentGid) {
 								tilesetGid = ts.first;
 								break;
@@ -136,11 +137,11 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 						currentGid -= tilesetGid;
 
 						// Get the Objects within the Object (i.e. the colliders)
-						std::vector<tmx::Tileset::Tile> specialTiles = tilesetSpecialTilesCollection[tilesetGid];
+						vector<tmx::Tileset::Tile> specialTiles = tilesetSpecialTilesCollection[tilesetGid];
 						tmx::ObjectGroup currentTileObjectGroup;
-						std::vector<tmx::Property> objectProps;
+						vector<tmx::Property> objectProps;
 						
-						for (auto& t : specialTiles)
+						for (tmx::Tileset::Tile& t : specialTiles)
 						{
 							if (t.ID == currentGid)
 							{
@@ -150,7 +151,7 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 						}
 						objectObjects = currentTileObjectGroup.getObjects();
 						
-						for (auto& p : objectProps)
+						for (tmx::Property& p : objectProps)
 						{
 							if (p.getName() == "Ysorting")
 							{
@@ -166,7 +167,7 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 						y -= h * scaleFactor;
 
 						// Process objectObjects
-						std::vector<TileCollider> objectColliders = GetColliders(objectObjects);
+						vector<TileCollider> objectColliders = GetColliders(objectObjects);
 
 						// Draw the Object
 						AddObject(x, y, assetId, static_cast<float>(w), static_cast<float>(h), scaleFactor, objectColliders, shouldYSort, debug);
@@ -179,13 +180,13 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 			// REGULAR TILES
 
 			auto* tileLayer = dynamic_cast<const tmx::TileLayer*>(layer.get());
-			auto& tiles = tileLayer->getTiles();
+			const vector< tmx::TileLayer::Tile>& tiles = tileLayer->getTiles();
 			for (int y = 0; y < rows; y++)
 			{
 				for (int x = 0; x < cols; x++)
 				{
 					int tileIndex = x + (y * cols);
-					auto currentGid = tiles[tileIndex].ID;
+					uint32_t currentGid = tiles[tileIndex].ID;
 
 					if (currentGid == 0)
 					{
@@ -193,7 +194,7 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 						continue;
 					}
 
-					auto tilesetGid = -1;
+					int tilesetGid = -1;
 					for (auto& ts : tilesetTextureCollection) {
 						if (ts.first <= currentGid) {
 							tilesetGid = ts.first;
@@ -211,10 +212,10 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 					currentGid -= tilesetGid;
 
 					// Get the objects from the current tile on the current tileset.
-					std::vector<tmx::Tileset::Tile> specialTiles = tilesetSpecialTilesCollection[tilesetGid];
+					vector<tmx::Tileset::Tile> specialTiles = tilesetSpecialTilesCollection[tilesetGid];
 					tmx::ObjectGroup currentTileObjectGroup;
-					std::vector<tmx::Object> currentTileObjects;
-					for (auto& t : specialTiles)
+					vector<tmx::Object> currentTileObjects;
+					for (tmx::Tileset::Tile& t : specialTiles)
 					{
 						if (t.ID == currentGid)
 						{
@@ -237,10 +238,29 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 					float posY = static_cast<float>(y * tileHeight * scaleFactor);
 
 					// Process TileObjects
-					std::vector<TileCollider> tileColliders = GetColliders(currentTileObjects);
+					vector<TileCollider> tileColliders = GetColliders(currentTileObjects);
 
 					// Draw the Tile
 					AddTile(srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid], tileWidth, scaleFactor, tileColliders, debug);
+				}
+			}
+
+			// ANIMATED TILES
+			for (pair<const uint32_t, const vector<tmx::Tileset::Tile>>& animatedTiles : tilesetAnimatedTilesCollection)
+			{
+				if (animatedTiles.second.empty())
+				{
+					//skip for layers with no animated tiles.
+					continue;
+				}
+
+				for (tmx::Tileset::Tile t : animatedTiles.second)
+				{
+					// we now have the tile as T, we can use its position and such to draw the animation later, now we need the frames
+					for (tmx::Tileset::Tile::Animation::Frame f : t.animation.frames)
+					{
+						// TODO create an Animation to pass to our AnimatedTile component
+					}
 				}
 			}
 		}
@@ -251,20 +271,20 @@ void TiledMapManager::LoadMap(std::string mapAssetId, int scaleFactor, bool debu
 	}
 }
 
-std::vector<TileCollider> TiledMapManager::GetColliders(std::vector<tmx::Object>& tileObjects)
+vector<TileCollider> TiledMapManager::GetColliders(vector<tmx::Object>& tileObjects)
 {
-	std::vector<TileCollider> tileColliders;
-	for (auto& o : tileObjects)
+	vector<TileCollider> tileColliders;
+	for (tmx::Object& o : tileObjects)
 	{
 		// Object should be of class TileCollision in Tiled to be recognized as a tile collision object,
 		// we can expand this to a switch statement when/if needed.
 		if (o.getClass() == "TileCollision" || o.getClass() == "ObjectCollision")
 		{
-			auto& tag = o.getName() == "" ? o.getClass() : o.getName();
+			const string& tag = o.getName() == "" ? o.getClass() : o.getName();
 			if (o.getShape() == tmx::Object::Shape::Ellipse || o.getShape() == tmx::Object::Shape::Rectangle)
 			{
 				//use getAABB() to get the bounding box for the object
-				auto& aabb = o.getAABB();
+				const tmx::FloatRect& aabb = o.getAABB();
 				SDL_FRect r{};
 				r.x = aabb.left;
 				r.y = aabb.top;
@@ -274,10 +294,10 @@ std::vector<TileCollider> TiledMapManager::GetColliders(std::vector<tmx::Object>
 			}
 			else
 			{
-				std::vector<SDL_FPoint> tileColliderPoints = {};
+				vector<SDL_FPoint> tileColliderPoints = {};
 				//use getPoints() the get a vector of points to draw a more complex shape
 				//this means we need to add a different type of ColliderComponent as the regular one takes an SDL_Rect for the shape.
-				for (auto& p : o.getPoints())
+				for (const tmx::Vector2f& p : o.getPoints())
 				{
 					SDL_FPoint point = { p.x, p.y };
 					tileColliderPoints.emplace_back(point);
@@ -289,14 +309,14 @@ std::vector<TileCollider> TiledMapManager::GetColliders(std::vector<tmx::Object>
 	return tileColliders;
 }
 
-void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, std::string tilesetAssetId, int tileSize, int scaleFactor, std::vector<TileCollider> &colliders, bool debug) const
+void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, string tilesetAssetId, int tileSize, int scaleFactor, vector<TileCollider> &colliders, bool debug) const
 {
-	auto& tile(manager.addEntity());
+	Entity& tile(manager.addEntity());
 	tile.addComponent<TileComponent>(srcX, srcY, x, y, tilesetAssetId, tileSize, scaleFactor);
 	tile.AddGroup(Game::groupMapTiles);
-	for (auto& c : colliders)
+	for (TileCollider& c : colliders)
 	{
-		auto& box(manager.addEntity());
+		Entity& box(manager.addEntity());
 		if (c.getColliderType() == Rectangle)
 		{
 			float boxX = x + c.getColliderRect().x * scaleFactor;
@@ -324,17 +344,17 @@ void TiledMapManager::AddTile(int srcX, int srcY, float x, float y, std::string 
 	}
 }
 
-void TiledMapManager::AddObject(float x, float y, std::string objectAssetId, float objectWidth, float objectHeight, int scaleFactor, std::vector<TileCollider>& colliders, bool shoudlYSort, bool debug) const
+void TiledMapManager::AddObject(float x, float y, string objectAssetId, float objectWidth, float objectHeight, int scaleFactor, vector<TileCollider>& colliders, bool shoudlYSort, bool debug) const
 {
-	auto& mapObject(manager.addEntity());
+	Entity& mapObject(manager.addEntity());
 	mapObject.addComponent<TransformComponent>(x, y, objectWidth, objectHeight, scaleFactor);
 	mapObject.addComponent<SpriteComponent>(objectAssetId, false);
 	mapObject.AddGroup(Game::groupMapObjects);
-	for (auto& c : colliders)
+	for (TileCollider& c : colliders)
 	{
 		if (c.getColliderType() == Rectangle)
 		{
-			auto& box(manager.addEntity());
+			Entity& box(manager.addEntity());
 			float boxX = x + c.getColliderRect().x * scaleFactor;
 			float boxY = y + c.getColliderRect().y * scaleFactor;
 			box.addComponent<TransformComponent>(boxX, boxY, c.getColliderRect().w, c.getColliderRect().h, scaleFactor);
