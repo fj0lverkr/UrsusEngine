@@ -12,7 +12,7 @@ public:
 
     AnimatedTileComponent(int srcX, int srcY, float posX, float posY, std::string assetId, int tileSize, int scaleFactor)
     {
-        TileComponent::TileComponent(srcX, srcY, posX, posY, assetId, tileSize, scaleFactor);
+        TileComponent(srcX, srcY, posX, posY, assetId, tileSize, scaleFactor);
     }
 
     void update()
