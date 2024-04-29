@@ -9,44 +9,44 @@ using namespace std;
 
 struct AnimatedTileFrame
 {
-    string assetId;
+    TileComponent* frameTile;
     int duration;
 
     ~AnimatedTileFrame() {};
 
-    AnimatedTileFrame(string assetId, int duration)
+    AnimatedTileFrame(TileComponent* frameTile, int duration)
     {
-        this->assetId = assetId;
+        this->frameTile = frameTile;
         this->duration = duration;
     }
 };
 
-class AnimatedTileComponent : public TileComponent
+class AnimatedTileComponent : public Component
 {
 private:
     int currentFrameId = 0;
     vector<AnimatedTileFrame> tileFrames;
+    AnimatedTileFrame* currentFrame = nullptr;
+
 public:
     ~AnimatedTileComponent() {}
 
-    AnimatedTileComponent(int srcX, int srcY, float posX, float posY, int tileSize, int scaleFactor, vector<AnimatedTileFrame> frames)
+    AnimatedTileComponent(vector<AnimatedTileFrame> frames)
     {
         tileFrames = frames;
-        TileComponent(srcX, srcY, posX, posY, tileFrames[currentFrameId].assetId, tileSize, scaleFactor);
+        currentFrame = &frames[currentFrameId];
     }
 
     void update()
     {
-        TileComponent::update();
-    }
-
-    void swapFrame(int frameId)
-    {
-        texture = Game::assets->GetTexture(tileFrames[frameId].assetId);
+        int animationSpeed = currentFrame->duration;
+        int numFrames = static_cast<int>(tileFrames.size()) - 1;
+        currentFrameId = static_cast<int>((SDL_GetTicks64() / animationSpeed) % numFrames);
+        currentFrame = &tileFrames[currentFrameId];
     }
 
     void draw()
     {
-        TileComponent::draw();
+        currentFrame->frameTile->draw();
     }
 };

@@ -198,7 +198,7 @@ void TiledMapManager::LoadMap(string mapAssetId, int scaleFactor, bool debug)
 					for (auto& ts : tilesetTextureCollection) {
 						if (ts.first <= currentGid) {
 							tilesetGid = ts.first;
-							
+
 							break;
 						}
 					}
@@ -210,6 +210,80 @@ void TiledMapManager::LoadMap(string mapAssetId, int scaleFactor, bool debug)
 
 					// Normalize the GID.
 					currentGid -= tilesetGid;
+
+					auto isSameTile = [currentGid](tmx::Tileset::Tile t) { return t.ID == currentGid; };
+
+					// look for the tile in our collection of animated tiles
+					for (pair<const uint32_t, const vector<tmx::Tileset::Tile>>& animatedTiles : tilesetAnimatedTilesCollection)
+					{
+						if (animatedTiles.second.empty())
+						{
+							// skip for layers with no animated tiles.
+							continue;
+						}
+						
+						auto findTile = find_if(animatedTiles.second.begin(), animatedTiles.second.end(), isSameTile);
+
+						if (findTile != animatedTiles.second.end())
+						{
+							// the current tile is animated
+							vector<AnimatedTileFrame> tileFrames;
+							tmx::Tileset::Tile tsAnimatedTile = *findTile;
+							// we now have the tile as tsAnimatedTile, we can use its position and such to draw the animation later, now we need the frames
+							for (tmx::Tileset::Tile::Animation::Frame f : tsAnimatedTile.animation.frames)
+							{
+								uint32_t currentAGid = f.tileID;
+
+								if (currentAGid == 0)
+								{
+									//skip empty tiles
+									continue;
+								}
+
+								int tilesetGid = -1;
+								for (auto& ts : tilesetTextureCollection) {
+									if (ts.first <= currentGid) {
+										tilesetGid = ts.first;
+
+										break;
+									}
+								}
+
+								if (tilesetGid == -1) {
+									//skip if no tileset was found for the tile
+									continue;
+								}
+
+								// Normalize the GID.
+								currentAGid -= tilesetGid;
+
+								// Find the dimensions of the tile sheet.
+								int tileSheetWidth = 0;
+								int tileSheetHeight = 0;
+								SDL_Texture* tex = Game::assets->GetTexture(tilesetTextureCollection[tilesetGid]);
+								SDL_QueryTexture(tex, NULL, NULL, &tileSheetWidth, &tileSheetHeight);
+
+								// Calculate the area on the tilesheet to draw from.
+								int srcX = (currentGid % (tileSheetWidth / tileWidth)) * tileWidth;
+								int srcY = (currentGid / (tileSheetWidth / tileWidth)) * tileHeight;
+
+								float posX = static_cast<float>(x *tileWidth * scaleFactor);
+								float posY = static_cast<float>(y * tileHeight * scaleFactor);
+
+								// Create tile and frame
+								TileComponent frameTile = { srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid], tileWidth, scaleFactor };
+								AnimatedTileFrame frame = { &frameTile, static_cast<int>(f.duration) };
+								tileFrames.emplace_back(frame);
+							}
+
+							/* TODO move the following 3 lines to a separate function and handle colliders,
+							also the code above might be simplified as it now copies a lot from the regular tiles. */ 
+							Entity& animatedTile = manager.addEntity();
+							animatedTile.addComponent<AnimatedTileComponent>(tileFrames);
+							animatedTile.AddGroup(Game::groupMapTiles);
+							break;
+						}
+					}
 
 					// Get the objects from the current tile on the current tileset.
 					vector<tmx::Tileset::Tile> specialTiles = tilesetSpecialTilesCollection[tilesetGid];
@@ -242,25 +316,6 @@ void TiledMapManager::LoadMap(string mapAssetId, int scaleFactor, bool debug)
 
 					// Draw the Tile
 					AddTile(srcX, srcY, posX, posY, tilesetTextureCollection[tilesetGid], tileWidth, scaleFactor, tileColliders, debug);
-				}
-			}
-
-			// ANIMATED TILES
-			for (pair<const uint32_t, const vector<tmx::Tileset::Tile>>& animatedTiles : tilesetAnimatedTilesCollection)
-			{
-				if (animatedTiles.second.empty())
-				{
-					//skip for layers with no animated tiles.
-					continue;
-				}
-
-				for (tmx::Tileset::Tile t : animatedTiles.second)
-				{
-					// we now have the tile as T, we can use its position and such to draw the animation later, now we need the frames
-					for (tmx::Tileset::Tile::Animation::Frame f : t.animation.frames)
-					{
-						// TODO create an Animation to pass to our AnimatedTile component
-					}
 				}
 			}
 		}
