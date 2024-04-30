@@ -9,12 +9,12 @@ using namespace std;
 
 struct AnimatedTileFrame
 {
-    TileComponent* frameTile;
+    TileComponent frameTile;
     int duration;
 
     ~AnimatedTileFrame() {};
 
-    AnimatedTileFrame(TileComponent* frameTile, int duration)
+    AnimatedTileFrame(TileComponent frameTile, int duration)
     {
         this->frameTile = frameTile;
         this->duration = duration;
@@ -47,6 +47,6 @@ public:
 
     void draw()
     {
-        currentFrame->frameTile->draw();
+        currentFrame->frameTile.draw();
     }
 };
